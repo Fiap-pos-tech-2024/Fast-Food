@@ -8,10 +8,10 @@ export class orderController {
     }
 
     public setupRoutes() {
-        this.routes.get('/', this.createOrder);
-        this.routes.put('/', this.updateOrder);
-        this.routes.delete('/', this.deleteOrder);
-        this.routes.get('/', this.getOrder);
+        this.routes.put('/', this.updateOrder.bind(this));
+        this.routes.delete('/', this.deleteOrder.bind(this));
+        this.routes.get('/', this.getOrder.bind(this));
+        this.routes.post('/', this.createOrder.bind(this));
         return this.routes;
     }
 
@@ -19,16 +19,16 @@ export class orderController {
         res.send('Create Order');
     }
 
-    public updateOrder() {
-        console.log('Update Order');
+    public updateOrder(req: any, res: any) {
+        res.send('Update Order');
     }
 
-    public deleteOrder() {
-        console.log('Delete Order');
+    public deleteOrder(req: any, res: any) {
+        res.send('Delete Order');
     }
 
-    public getOrder() {
-        console.log('Get Order');
+    public getOrder(req: any, res: any) {
+        res.send('Get Order');
     }
 
 }

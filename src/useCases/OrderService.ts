@@ -1,15 +1,22 @@
-export class orderService {
+import { OrderRepository } from '../domain/interface/orderRepository'
+import { Order } from '../domain/entities/order'
 
-    createOrder() {
-        console.log('Create Order');
+
+export default class orderService {
+    static async createOrder(orderRepository: OrderRepository): Promise<Order> {
+        const order = new Order(orderInput)
+        return orderRepository.createOrder(order)
     }
-    updateOrder() {
-        console.log('Update Order');
+
+    async getOrder(id: string): Promise<Order | null> {
+        return this.orderRepository.findById(id)
     }
-    deleteOrder() {
-        console.log('Delete Order');
+
+    async updateOrder(id: string, item: string, amount: number) {
+        const order = new Order(id, item, amount)
+        return this.orderRepository.update(order)
     }
-    getOrder() {
-        console.log('Get Order');
+    async deleteOrder(id: string) {
+        return this.orderRepository.delete(id)
     }
 }

@@ -1,12 +1,8 @@
-import Order  from '../entities/order'
-import { OrderStatusType } from '../entities/types/orderTypes'
+import { Order } from '../entities/order';
 
 export interface OrderRepository {
-    orders(status: OrderStatusType): Promise<Array<Order>>
-    createOrder(order: Order): Promise<Order>
-    findOrderById(id: string): Promise<Order | null>
-    findOrderByIdClient(idClient: string): Promise<Order | null>
-    updateOrder(order: Order): Promise<Order>
-    updateStatusOrder(id: string, status: OrderStatusType): Promise<Order>
-    deleteOrder(id: string): Promise<void> 
+  createOrder(order: Order): Promise<void>;
+  updateOrder(order: Order): Promise<void>;
+  deleteOrder(id: string): Promise<void>;
+  updateOrderStatus(orderId: string, status: string): Promise<Order | null>;
 }

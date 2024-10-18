@@ -1,22 +1,21 @@
-import { OrderRepository } from '../domain/interface/orderRepository'
-import { Order } from '../domain/entities/order'
+import { Order } from '../domain/entities/order';
+import { OrderRepository } from '../domain/interface/orderRepository';
 
+export class OrderService {
+  constructor(private orderRepository: OrderRepository) {}
 
-export default class orderService {
-    static async createOrder(orderRepository: OrderRepository): Promise<Order> {
-        const order = new Order(orderInput)
-        return orderRepository.createOrder(order)
-    }
+  async createOrder(order: Order): Promise<void> {
+    return await this.orderRepository.createOrder(order);
+  }
 
-    async getOrder(id: string): Promise<Order | null> {
-        return this.orderRepository.findById(id)
-    }
+  updateOrder() {
+    console.log('Update Order');
+  }
+  deleteOrder() {
+    console.log('Delete Order');
+  }
 
-    async updateOrder(id: string, item: string, amount: number) {
-        const order = new Order(id, item, amount)
-        return this.orderRepository.update(order)
-    }
-    async deleteOrder(id: string) {
-        return this.orderRepository.delete(id)
-    }
+  async updateOrderStatus(id: string, status: string): Promise<Order | null> {
+    return await this.orderRepository.updateOrderStatus(id, status);
+  }
 }

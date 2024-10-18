@@ -1,42 +1,65 @@
-import { Router } from 'express';
-import { Request, Response } from 'express';
+import { Router, Request, Response } from 'express';
+import { OrderService } from '../../useCases/orderService';
 
-interface startOrderPayload {
-  idClient: string;
-}
-
-export class orderController {
+export class OrderController {
   private routes: Router;
-  constructor() {
+  constructor(private orderService: OrderService) {
     this.routes = Router();
   }
 
   public setupRoutes() {
-    this.routes.get('/', this.createOrder);
-    this.routes.put('/', this.updateOrder);
-    this.routes.delete('/', this.deleteOrder);
-    this.routes.get('/', this.getOrder);
+    this.routes.put('/', this.updateOrder.bind(this));
+    this.routes.delete('/', this.deleteOrder.bind(this));
+    this.routes.get('/', this.getOrder.bind(this));
+    this.routes.post('/', this.createOrder.bind(this));
+    this.routes.post(
+      '/orders/update-status',
+      this.updateOrderStatus.bind(this),
+    );
+
     return this.routes;
   }
 
-  public async createOrder(req: Request<unknown, startOrderPayload>, res: Response) {
+  public async createOrder(req: Request, res: Response) {
+    const { order } = req.body;
+
     try {
-        const { idClient } = req;
-
-        const createdOrder = await 
+      if (!order) {
+        return res.status(404).json({ error: 'Order not created' });
+      }
+      await this.orderService.createOrder(order);
+      res.status(201).send('Order created successfully');
+    } catch (error) {
+      res.status(500).json({ error: 'An unexpected error occurred' });
     }
-        res.send('Create Order');
   }
 
-  public updateOrder() {
-    console.log('Update Order');
+  public updateOrder(req: Request, res: Response) {
+    res.send('Update Order');
   }
 
-  public deleteOrder() {
-    console.log('Delete Order');
+  public deleteOrder(req: Request, res: Response) {
+    res.send('Delete Order');
   }
 
-  public getOrder() {
-    console.log('Get Order');
+  public getOrder(req: Request, res: Response) {
+    res.send('Get Order');
+  }
+
+  public async updateOrderStatus(req: Request, res: Response) {
+    const { orderId, status } = req.body;
+
+    try {
+      const updatedOrder = await this.orderService.updateOrderStatus(
+        orderId,
+        status,
+      );
+      if (!updatedOrder) {
+        return res.status(404).json({ error: 'Order not found' });
+      }
+      res.status(200).json(updatedOrder);
+    } catch (error) {
+      res.status(500).json({ error: 'An unexpected error occurred' });
+    }
   }
 }

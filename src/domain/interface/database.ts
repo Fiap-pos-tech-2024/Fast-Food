@@ -1,5 +1,3 @@
 export interface dataBaseInterface {
-
-    connectionDB(): void;
-  
+    connectionDB(): void
 }

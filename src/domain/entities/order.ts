@@ -16,6 +16,6 @@ export class Order {
         public data: string,
         public total: number,
         public products: any,
-        public payment: string,
+        public payment: string
     ) {}
 }

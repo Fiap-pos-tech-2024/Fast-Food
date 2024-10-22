@@ -6,5 +6,4 @@ export class User {
         public email: string,
         public status: boolean
     ) {}
-
 }

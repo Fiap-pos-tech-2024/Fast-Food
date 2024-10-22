@@ -5,6 +5,7 @@ import { UserController } from './drivers/web/userController'
 import { MongoConnection } from './config/mongoConfig'
 import { userUseCase } from './useCases/user'
 import { MongoUserRepository } from './drivers/database/userModel'
+import swaggerRouter from './config/swaggerConfig'
 
 class initProject {
     public express: express.Application
@@ -20,6 +21,7 @@ class initProject {
         try {
             await this.mongoConnection.connect()
             this.express.use(express.json())
+            this.express.use('/api-docs', swaggerRouter)
             this.setupRoutes()
             this.startServer()
         } catch (error) {

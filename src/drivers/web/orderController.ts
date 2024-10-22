@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { OrderService } from '../../useCases/OrderService';
 
-export class orderController {
+export class OrderController {
 
     private routes: Router;
     constructor(private orderService: OrderService) {

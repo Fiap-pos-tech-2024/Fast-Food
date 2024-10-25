@@ -1,10 +1,12 @@
 import express from 'express'
-import { orderController } from './drivers/web/orderController'
+import { OrderController } from './drivers/web/orderController'
 import { healthCheckController } from './drivers/web/healthCheckController'
 import { UserController } from './drivers/web/userController'
 import { MongoConnection } from './config/mongoConfig'
 import { userUseCase } from './useCases/user'
 import { MongoUserRepository } from './drivers/database/userModel'
+import { MongoOrderRepository } from './drivers/database/orderModel'
+import { OrderService } from './useCases/OrderService'
 
 class initProject {
     public express: express.Application
@@ -33,8 +35,11 @@ class initProject {
         const routesUserController = new UserController(userCase)
         this.express.use('/user', routesUserController.setupRoutes())
 
-        const routesOrderController = new orderController()
+        const orderRepository = new MongoOrderRepository(this.mongoConnection)
+        const orderService = new OrderService(orderRepository)
+        const routesOrderController = new OrderController(orderService)
         this.express.use('/order', routesOrderController.setupRoutes())
+
 
         const routesHealthCheckController = new healthCheckController()
         this.express.use('/health', routesHealthCheckController.setupRoutes())

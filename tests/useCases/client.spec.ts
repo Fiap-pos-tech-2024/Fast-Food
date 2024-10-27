@@ -1,6 +1,6 @@
 import { clientUseCase } from '../../src/useCases/client';
 import { ClientRepository } from '../../src/domain/interface/clientRepository';
-import { Client } from '../domain/entities/client';
+import { Client } from '../../src/domain/entities/client';
 
 describe('clientUseCase', () => {
     let clientRepository: jest.Mocked<ClientRepository>;
@@ -51,23 +51,46 @@ describe('clientUseCase', () => {
     });
 
     describe('updateClient', () => {
-        it('should update client data', async () => {
+        it('should update client data if client exists', async () => {
             const clientId = '1';
             const updatedClientData: Client = { idClient: '1', email: 'updated@example.com' } as Client;
+            clientRepository.findById.mockResolvedValue(updatedClientData);
 
             await useCase.updateClient(clientId, updatedClientData);
 
+            expect(clientRepository.findById).toHaveBeenCalledWith(clientId);
             expect(clientRepository.update).toHaveBeenCalledWith(clientId, updatedClientData);
+        });
+
+        it('should throw an error if client does not exist', async () => {
+            const clientId = '1';
+            const updatedClientData: Client = { idClient: '1', email: 'updated@example.com' } as Client;
+            clientRepository.findById.mockResolvedValue(null);
+
+            await expect(useCase.updateClient(clientId, updatedClientData)).rejects.toThrow('Client does not exist');
+            expect(clientRepository.update).not.toHaveBeenCalled();
         });
     });
 
     describe('deleteClient', () => {
-        it('should delete a client by id', async () => {
+        it('should delete a client by id if the client exists', async () => {
             const clientId = '1';
+            const clientData: Client = { idClient: '1', email: 'test@example.com' } as Client;
+
+            clientRepository.findById.mockResolvedValue(clientData);
 
             await useCase.deleteClient(clientId);
 
+            expect(clientRepository.findById).toHaveBeenCalledWith(clientId);
             expect(clientRepository.delete).toHaveBeenCalledWith(clientId);
+        });
+
+        it('should throw an error if client does not exist', async () => {
+            const clientId = '1';
+            clientRepository.findById.mockResolvedValue(null);
+
+            await expect(useCase.deleteClient(clientId)).rejects.toThrow('Client does not exist');
+            expect(clientRepository.delete).not.toHaveBeenCalled();
         });
     });
 

@@ -22,10 +22,20 @@ export class clientUseCase {
     }
 
     public async updateClient(clientId: string, updatedClientData: Client): Promise<void> {
+        const existingClient = await this.clientRepository.findById(clientId);
+        if (!existingClient) {
+            throw new Error('Client does not exist');
+        }
         await this.clientRepository.update(clientId, updatedClientData);
     }
 
     public async deleteClient(clientId: string): Promise<void> {
+
+        const existingClient = await this.clientRepository.findById(clientId);
+        if (!existingClient) {
+            throw new Error('Client does not exist');
+        }
+
         await this.clientRepository.delete(clientId);
     }
 

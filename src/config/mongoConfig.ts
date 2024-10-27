@@ -5,7 +5,6 @@ export class MongoConnection {
     private client: MongoClient;
     private db: Db | null = null;
     private readonly url = 'mongodb://mongo:27017';
-    // galera, coloca aqui o nome do banco que vocês criaram no MongoDB
     private readonly dbName = 'fiap';
 
     constructor() {

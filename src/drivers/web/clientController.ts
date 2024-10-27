@@ -32,7 +32,6 @@ export class ClientController {
     public async createClient(req: Request, res: Response) {
         try {
             const clientData = req.body;
-            console.log('dados', req.body)
             await this.clientUseCase.createClient(clientData);
             res.status(201).send('Client created successfully');
         } catch (error: any) {

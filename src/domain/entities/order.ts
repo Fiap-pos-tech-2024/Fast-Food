@@ -1,14 +1,21 @@
-export class Pedido {
+export enum OrderStatus {
+    RECEIVED = 'RECEIVED',
+    IN_PREPARATION = 'IN_PREPARATION',
+    READY = 'READY',
+    COMPLETED = 'COMPLETED',
+}
+
+export class Order {
     constructor(
-        public idPedido: number,
-        public status: string,
-        public idUsuario: number | null,
+        public orderId: number,
+        public status: OrderStatus,
+        public userId: number | null,
         public cpf: number | null,
         public name: string | null,
         public email: string | null,
         public data: string,
-        public valorTotal: number,
-        public produtos: any,
-        public pagamento: string,
-    ) { }
+        public total: number,
+        public products: any,
+        public payment: string,
+    ) {}
 }

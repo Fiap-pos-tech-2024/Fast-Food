@@ -1,3 +1,4 @@
+```javascript
 export type pedido = {
     idPedido: number,
     status: string,
@@ -35,3 +36,6 @@ export type produto = {
     preco: number,
     quantidade: number
 }[]
+
+
+```

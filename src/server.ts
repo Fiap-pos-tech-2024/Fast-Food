@@ -7,6 +7,7 @@ import { clientUseCase } from './useCases/client'
 import { MongoClientRepository } from './drivers/database/clientModel'
 import { MongoOrderRepository } from './drivers/database/orderModel'
 import { OrderService } from './useCases/OrderService'
+import swaggerRouter from './config/swaggerConfig'
 
 class initProject {
     public express: express.Application
@@ -22,6 +23,7 @@ class initProject {
         try {
             await this.mongoConnection.connect()
             this.express.use(express.json())
+            this.express.use('/api-docs', swaggerRouter)
             this.setupRoutes()
             this.startServer()
         } catch (error) {
@@ -39,7 +41,6 @@ class initProject {
         const orderService = new OrderService(orderRepository)
         const routesOrderController = new OrderController(orderService)
         this.express.use('/order', routesOrderController.setupRoutes())
-
 
         const routesHealthCheckController = new healthCheckController()
         this.express.use('/health', routesHealthCheckController.setupRoutes())

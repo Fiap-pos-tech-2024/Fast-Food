@@ -5,7 +5,7 @@ export class Client {
         public name: string,
         public email: string,
         public status: boolean
-    ) { }
+    ) {}
 
     static createMock(
         idClient = '1',
@@ -14,6 +14,6 @@ export class Client {
         email = 'john@example.com',
         status = true
     ): Client {
-        return new Client(idClient, cpf, name, email, status);
+        return new Client(idClient, cpf, name, email, status)
     }
 }

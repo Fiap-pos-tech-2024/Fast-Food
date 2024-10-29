@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { OrderService } from '../../useCases/OrderService'
 
-export class orderController {
+export class OrderController {
     private routes: Router
     constructor(private orderService: OrderService) {
         this.routes = Router()
@@ -36,42 +36,42 @@ export class orderController {
         res.send('Get Order')
     }
 
-/**
- * @swagger
- * /orders/update-status:
- *   put:
- *     summary: Update order status
- *     tags:
- *       - Orders
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               orderId:
- *                 type: string
- *               status:
- *                 type: string
- *                 enum: [RECEIVED, IN_PREPARATION, READY, COMPLETED]
- *     responses:
- *       200:
- *         description: Order status updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 updatedOrder:
- *                   type: object
- *       404:
- *         description: Order not found
- *       500:
- *         description: Unexpected error
- */
+    /**
+     * @swagger
+     * /orders/update-status:
+     *   put:
+     *     summary: Update order status
+     *     tags:
+     *       - Orders
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               orderId:
+     *                 type: string
+     *               status:
+     *                 type: string
+     *                 enum: [RECEIVED, IN_PREPARATION, READY, COMPLETED]
+     *     responses:
+     *       200:
+     *         description: Order status updated successfully
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 message:
+     *                   type: string
+     *                 updatedOrder:
+     *                   type: object
+     *       404:
+     *         description: Order not found
+     *       500:
+     *         description: Unexpected error
+     */
 
     public async updateOrderStatus(req: Request, res: Response) {
         const { orderId, status } = req.body

@@ -1,6 +1,6 @@
-export class User {
+export class Client {
     constructor(
-        public idUser: string,
+        public idClient: string,
         public cpf: string,
         public name: string,
         public email: string,

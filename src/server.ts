@@ -1,10 +1,10 @@
 import express from 'express'
 import { OrderController } from './drivers/web/orderController'
 import { healthCheckController } from './drivers/web/healthCheckController'
-import { UserController } from './drivers/web/userController'
+import { ClientController } from './drivers/web/clientController'
 import { MongoConnection } from './config/mongoConfig'
-import { userUseCase } from './useCases/user'
-import { MongoUserRepository } from './drivers/database/userModel'
+import { clientUseCase } from './useCases/client'
+import { MongoClientRepository } from './drivers/database/clientModel'
 import { MongoOrderRepository } from './drivers/database/orderModel'
 import { OrderService } from './useCases/OrderService'
 
@@ -30,10 +30,10 @@ class initProject {
     }
 
     setupRoutes() {
-        const userRepository = new MongoUserRepository(this.mongoConnection)
-        const userCase = new userUseCase(userRepository)
-        const routesUserController = new UserController(userCase)
-        this.express.use('/user', routesUserController.setupRoutes())
+        const clientRepository = new MongoClientRepository(this.mongoConnection)
+        const clientCase = new clientUseCase(clientRepository)
+        const routesClientController = new ClientController(clientCase)
+        this.express.use('/client', routesClientController.setupRoutes())
 
         const orderRepository = new MongoOrderRepository(this.mongoConnection)
         const orderService = new OrderService(orderRepository)

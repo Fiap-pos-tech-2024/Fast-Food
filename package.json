@@ -6,7 +6,8 @@
     "start": "nodemon -L --exec ts-node src/server.ts",
     "test": "jest",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
   },
   "keywords": [],
   "author": "",

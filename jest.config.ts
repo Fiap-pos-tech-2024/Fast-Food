@@ -1,4 +1,4 @@
-import type { Config } from 'jest';
+import type { Config } from 'jest'
 
 const config: Config = {
   preset: 'ts-jest',
@@ -11,6 +11,6 @@ const config: Config = {
   },
   moduleFileExtensions: ['ts', 'js', 'json'],
   transformIgnorePatterns: ['/node_modules/'],
-};
+}
 
-export default config;
+export default config

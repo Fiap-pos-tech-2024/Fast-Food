@@ -1,24 +1,24 @@
 services:
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - MONGODB_URI=mongodb://mongo:27017/seu_banco_de_dados # Alterar para o banco de dados
-    depends_on:
-      - mongo
-    volumes:
-      - ./src:/app/src
+    api:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - '3000:3000'
+        environment:
+            - MONGODB_URI=mongodb://mongo:27017/seu_banco_de_dados # Alterar para o banco de dados
+        depends_on:
+            - mongo
+        volumes:
+            - ./src:/app/src
 
-  mongo:
-    image: mongo:latest
-    command:
-      - '--logpath'
-      - '/var/log/mongodb/mongod.log'
-    volumes:
-      - mongo_data:/data/db # Persistir os dados do MongoDB
+    mongo:
+        image: mongo:latest
+        command:
+            - '--logpath'
+            - '/var/log/mongodb/mongod.log'
+        volumes:
+            - mongo_data:/data/db # Persistir os dados do MongoDB
 
 volumes:
-  mongo_data:
+    mongo_data:

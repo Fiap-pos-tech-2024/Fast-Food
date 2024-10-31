@@ -1,3 +1,4 @@
+
 import { Router, Request, Response } from 'express';
 import { OrderService } from '../../useCases/orderService';
 
@@ -12,8 +13,7 @@ export class OrderController {
     this.routes.delete('/:id', this.deleteOrder.bind(this));
     this.routes.get('/:id', this.getOrder.bind(this));
     this.routes.post('/', this.createOrder.bind(this));
-    );
-
+    this.routes.post('/orders/update-status', this.updateOrderStatus.bind(this))
     return this.routes;
   }
 
@@ -60,4 +60,23 @@ export class OrderController {
       res.status(500).json({ error: 'An unexpected error occurred' });
     }
   }
+  
+     public async updateOrderStatus(req: Request, res: Response): Promise<void> {
+        const { orderId, status } = req.body;
+
+
+        try {
+            const updatedOrder = await this.orderService.updateOrderStatus(
+                orderId,
+                status
+            )
+            if (!updatedOrder) {
+                res.status(404).json({ error: 'Order not found' });
+                return
+            }
+            res.status(200).json(updatedOrder)
+        } catch (error) {
+            res.status(500).json({ error: 'An unexpected error occurred' })
+        }
+    }
 }

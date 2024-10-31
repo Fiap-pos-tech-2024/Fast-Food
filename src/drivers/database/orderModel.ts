@@ -64,4 +64,14 @@ export class MongoOrderRepository implements OrderRepository {
       .collection(this.collection)
       .deleteOne({ _id: new ObjectId(orderId) });
   }
+  
+    // async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order | null> {
+    //     const db = await this.getDb();
+    //     const result = await db.collection(this.collection).findOneAndUpdate(
+    //         { orderId },
+    //         { $set: { status } },
+    //         { returnOriginal: false }
+    //     ).exec();
+    //     return result.value;
+    // }
 }

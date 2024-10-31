@@ -1,6 +1,5 @@
 export class HealthCheckService {
-    
     healthCheck() {
-        console.log('Health Check');
+        console.log('Health Check')
     }
 }

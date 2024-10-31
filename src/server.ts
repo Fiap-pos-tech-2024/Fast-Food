@@ -51,4 +51,4 @@ class initProject {
   }
 }
 
-new initProject();
+new initProject()

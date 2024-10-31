@@ -1,10 +1,11 @@
+
 import OrderItem from './orderItem';
 
 export enum OrderStatus {
-  RECEIVED = 'RECEIVED',
-  IN_PREPARATION = 'IN_PREPARATION',
-  READY = 'READY',
-  COMPLETED = 'COMPLETED',
+    RECEIVED = 'RECEIVED',
+    IN_PREPARATION = 'IN_PREPARATION',
+    READY = 'READY',
+    COMPLETED = 'COMPLETED',
 }
 
 export class Order {
@@ -30,11 +31,3 @@ export class Order {
     this.value = order.value;
   }
 }
-
-// calculateTotalValue() {
-//   return (
-//     this.itens?.reduce(
-//       (total: number, item: OrderItem) => total + item.calculateTotalValue(),
-//       0,
-//     ) ?? 0
-//   );

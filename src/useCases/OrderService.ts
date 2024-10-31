@@ -18,4 +18,9 @@ export class OrderService {
   async deleteOrder(id: string) {
     return await this.orderRepository.deleteOrder(id);
   }
+  
+   async updateOrderStatus(id: string, status: string): Promise<Order | null> {
+      return await this.orderRepository.updateOrderStatus(id, status)
+  }
+
 }

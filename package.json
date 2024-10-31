@@ -1,37 +1,40 @@
 {
-  "name": "fast-food",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "start": "nodemon -L --exec ts-node src/server.ts",
-    "test": "jest",
-    "lint": "eslint . --ext .ts",
-    "format": "prettier --write ."
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@eslint/js": "^9.10.0",
-    "@types/eslint__js": "^8.42.3",
-    "@types/jest": "^29.5.14",
-    "@typescript-eslint/eslint-plugin": "^8.6.0",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.30.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "jest": "^29.7.0",
-    "prettier": "^3.3.3",
-    "ts-jest": "^29.2.5",
-    "typescript": "^4.9.5",
-    "typescript-eslint": "^8.6.0"
-  },
-  "dependencies": {
-    "@types/express": "^5.0.0",
-    "express": "^4.21.0",
-    "mongodb": "^6.9.0",
-    "nodemon": "^3.1.6",
-    "ts-node": "^10.9.2"
-  }
+    "name": "fast-food",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon -L --exec ts-node src/server.ts",
+        "test": "jest",
+        "lint": "eslint . --ext .ts",
+        "format": "prettier --write .",
+        "check-format": "prettier --check ."
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "devDependencies": {
+        "@eslint/js": "^9.10.0",
+        "@types/eslint__js": "^8.42.3",
+        "@types/jest": "^29.5.14",
+        "@types/swagger-jsdoc": "^6.0.4",
+        "@types/swagger-ui-express": "^4.1.6",
+        "@typescript-eslint/eslint-plugin": "^8.6.0",
+        "eslint": "^8.57.1",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.30.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "jest": "^29.7.0",
+        "prettier": "^3.3.3",
+        "ts-jest": "^29.2.5",
+        "typescript": "^4.9.5",
+        "typescript-eslint": "^8.6.0"
+    },
+    "dependencies": {
+        "@types/express": "^5.0.0",
+        "express": "^4.21.0",
+        "mongodb": "^6.9.0",
+        "nodemon": "^3.1.6",
+        "ts-node": "^10.9.2"
+    }
 }

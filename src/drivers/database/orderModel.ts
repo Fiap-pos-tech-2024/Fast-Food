@@ -27,19 +27,19 @@ export class MongoOrderRepository implements OrderRepository {
         throw new Error('Method not implemented.')
     }
 
-    async updateOrderStatus(
-        orderId: string,
-        status: OrderStatus
-    ): Promise<Order | null> {
-        const db = await this.getDb()
-        const result = await db
-            .collection(this.collection)
-            .findOneAndUpdate(
-                { orderId },
-                { $set: { status } },
-                { returnOriginal: false }
-            )
-            .exec()
-        return result.value
+
+    async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order | null> {
+        throw new Error('Method not implemented.');
+
     }
+
+    // async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order | null> {
+    //     const db = await this.getDb();
+    //     const result = await db.collection(this.collection).findOneAndUpdate(
+    //         { orderId },
+    //         { $set: { status } },
+    //         { returnOriginal: false }
+    //     ).exec();
+    //     return result.value;
+    // }
 }

@@ -36,45 +36,9 @@ export class OrderController {
         res.send('Get Order')
     }
 
-    /**
-     * @swagger
-     * /orders/update-status:
-     *   put:
-     *     summary: Update order status
-     *     tags:
-     *       - Orders
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/json:
-     *           schema:
-     *             type: object
-     *             properties:
-     *               orderId:
-     *                 type: string
-     *               status:
-     *                 type: string
-     *                 enum: [RECEIVED, IN_PREPARATION, READY, COMPLETED]
-     *     responses:
-     *       200:
-     *         description: Order status updated successfully
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 message:
-     *                   type: string
-     *                 updatedOrder:
-     *                   type: object
-     *       404:
-     *         description: Order not found
-     *       500:
-     *         description: Unexpected error
-     */
+    public async updateOrderStatus(req: Request, res: Response): Promise<void> {
+        const { orderId, status } = req.body;
 
-    public async updateOrderStatus(req: Request, res: Response) {
-        const { orderId, status } = req.body
 
         try {
             const updatedOrder = await this.orderService.updateOrderStatus(
@@ -82,7 +46,8 @@ export class OrderController {
                 status
             )
             if (!updatedOrder) {
-                return res.status(404).json({ error: 'Order not found' })
+                res.status(404).json({ error: 'Order not found' });
+                return
             }
             res.status(200).json(updatedOrder)
         } catch (error) {

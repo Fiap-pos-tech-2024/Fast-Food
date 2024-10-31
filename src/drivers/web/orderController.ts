@@ -34,13 +34,14 @@ export class OrderController {
         res.send('Get Order');
     }
 
-    public async updateOrderStatus(req: Request, res: Response) {
+    public async updateOrderStatus(req: Request, res: Response): Promise<void> {
         const { orderId, status } = req.body;
 
         try {
             const updatedOrder = await this.orderService.updateOrderStatus(orderId, status);
             if (!updatedOrder) {
-                return res.status(404).json({ error: 'Order not found' });
+                res.status(404).json({ error: 'Order not found' });
+                return 
             }
             res.status(200).json(updatedOrder);
         } catch (error) {

@@ -1,3 +1,6 @@
+
+import OrderItem from './orderItem';
+
 export enum OrderStatus {
     RECEIVED = 'RECEIVED',
     IN_PREPARATION = 'IN_PREPARATION',
@@ -6,16 +9,25 @@ export enum OrderStatus {
 }
 
 export class Order {
-    constructor(
-        public orderId: number,
-        public status: OrderStatus,
-        public userId: number | null,
-        public cpf: number | null,
-        public name: string | null,
-        public email: string | null,
-        public data: string,
-        public total: number,
-        public products: any,
-        public payment: string
-    ) {}
+  public idOrder: string | null;
+  public idClient: string | null;
+  public cpf: string | null;
+  public name: string | null;
+  public email: string | null;
+  public idPayment: string | null;
+  public status: OrderStatus;
+  public value: number;
+  public itens: OrderItem[];
+
+  constructor(order: Order) {
+    this.idOrder = order.idOrder;
+    this.idClient = order.idClient;
+    this.cpf = order.cpf;
+    this.name = order.name;
+    this.email = order.email;
+    this.idPayment = order.idPayment;
+    this.status = order.status;
+    this.itens = order.itens ?? [];
+    this.value = order.value;
+  }
 }

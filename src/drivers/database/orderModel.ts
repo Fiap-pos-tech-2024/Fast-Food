@@ -64,14 +64,37 @@ export class MongoOrderRepository implements OrderRepository {
       .collection(this.collection)
       .deleteOne({ _id: new ObjectId(orderId) });
   }
+
+  async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order | null> {
+    throw new Error('Method not implemented.');
+  }
+
+  async listOrders(): Promise<Order[]> {
+    const db = await this.getDb();
+    const orders = await db.collection(this.collection).find().toArray();
+    return orders.map((order) => {
+      return new Order({
+        idOrder: order._id.toString(),
+        idClient: order.idClient,
+        cpf: order.cpf,
+        name: order.name,
+        email: order.email,
+        status: order.status,
+        itens: order.itens,
+        value: order.value,
+        idPayment: order.idPayment,
+      });
+    });
+  }
   
-    // async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order | null> {
-    //     const db = await this.getDb();
-    //     const result = await db.collection(this.collection).findOneAndUpdate(
-    //         { orderId },
-    //         { $set: { status } },
-    //         { returnOriginal: false }
-    //     ).exec();
-    //     return result.value;
-    // }
+
+  // async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order | null> {
+  //     const db = await this.getDb();
+  //     const result = await db.collection(this.collection).findOneAndUpdate(
+  //         { orderId },
+  //         { $set: { status } },
+  //         { returnOriginal: false }
+  //     ).exec();
+  //     return result.value;
+  // }
 }

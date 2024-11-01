@@ -12,7 +12,7 @@ export class ClientController {
 
     public setupRoutes() {
         this.routes.post('/', this.createClient.bind(this))
-        this.routes.put('/:id', this.updateClient.bind(this))
+        this.routes.patch('/:id', this.updateClient.bind(this))
         this.routes.delete('/:id', this.deleteClient.bind(this))
         this.routes.get('/:id', this.getClient.bind(this))
         this.routes.get('/', this.listClients.bind(this))

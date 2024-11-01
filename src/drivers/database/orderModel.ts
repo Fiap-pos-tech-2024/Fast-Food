@@ -1,100 +1,111 @@
-import { MongoConnection } from '../../config/mongoConfig';
-import { Order, OrderStatus } from '../../domain/entities/order';
-import { OrderRepository } from '../../domain/interface/orderRepository';
-import { ObjectId } from 'mongodb';
+import { MongoConnection } from '../../config/mongoConfig'
+import { Order, OrderStatus } from '../../domain/entities/order'
+import { OrderRepository } from '../../domain/interface/orderRepository'
+import { ObjectId } from 'mongodb'
 
 export class MongoOrderRepository implements OrderRepository {
-  private collection = 'order';
-  private mongoConnection: MongoConnection;
+    private collection = 'order'
+    private mongoConnection: MongoConnection
 
-  constructor(mongoConnection: MongoConnection) {
-    this.mongoConnection = mongoConnection;
-  }
-
-  private async getDb() {
-    return this.mongoConnection.getDatabase();
-  }
-
-  async createOrder(order: Order): Promise<void> {
-    const db = await this.getDb();
-    await db.collection(this.collection).insertOne({
-      _id: new ObjectId(),
-      idClient: order.idClient,
-      cpf: order.cpf,
-      name: order.name,
-      email: order.email,
-      status: order.status,
-      itens: order.itens,
-      value: order.value,
-    });
-  }
-
-  async getOrder(orderId: string): Promise<Order | null> {
-    const db = await this.getDb();
-    const order = await db
-      .collection(this.collection)
-      .findOne({ _id: new ObjectId(orderId) });
-    if (order) {
-      return new Order({
-        idOrder: order._id.toString(),
-        idClient: order.idClient,
-        cpf: order.cpf,
-        name: order.name,
-        email: order.email,
-        status: order.status,
-        itens: order.itens,
-        value: order.value,
-        idPayment: order.idPayment,
-      });
+    constructor(mongoConnection: MongoConnection) {
+        this.mongoConnection = mongoConnection
     }
-    return null;
-  }
 
-  async updateOrder(orderId: string, updatedOrderData: Order): Promise<void> {
-    const db = await this.getDb();
-    const dbCollection = db.collection(this.collection);
-    const query = { _id: new ObjectId(orderId) };
+    private async getDb() {
+        return this.mongoConnection.getDatabase()
+    }
 
-    await dbCollection.updateOne(query, { $set: updatedOrderData });
-  }
+    async createOrder(order: Order): Promise<void> {
+        const db = await this.getDb()
+        await db.collection(this.collection).insertOne({
+            _id: new ObjectId(),
+            idClient: order.idClient,
+            cpf: order.cpf,
+            name: order.name,
+            email: order.email,
+            status: order.status,
+            itens: order.itens,
+            value: order.value,
+        })
+    }
 
-  async deleteOrder(orderId: string): Promise<void> {
-    const db = await this.getDb();
-    await db
-      .collection(this.collection)
-      .deleteOne({ _id: new ObjectId(orderId) });
-  }
+    async getOrder(orderId: string): Promise<Order | null> {
+        const db = await this.getDb()
+        const order = await db
+            .collection(this.collection)
+            .findOne({ _id: new ObjectId(orderId) })
+        if (order) {
+            return new Order({
+                idOrder: order._id.toString(),
+                idClient: order.idClient,
+                cpf: order.cpf,
+                name: order.name,
+                email: order.email,
+                status: order.status,
+                itens: order.itens,
+                value: order.value,
+                idPayment: order.idPayment,
+            })
+        }
+        return null
+    }
 
-  async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order | null> {
-    throw new Error('Method not implemented.');
-  }
+    async updateOrder(orderId: string, updatedOrderData: Order): Promise<void> {
+        const db = await this.getDb()
+        const dbCollection = db.collection(this.collection)
+        const query = { _id: new ObjectId(orderId) }
 
-  async listOrders(): Promise<Order[]> {
-    const db = await this.getDb();
-    const orders = await db.collection(this.collection).find().toArray();
-    return orders.map((order) => {
-      return new Order({
-        idOrder: order._id.toString(),
-        idClient: order.idClient,
-        cpf: order.cpf,
-        name: order.name,
-        email: order.email,
-        status: order.status,
-        itens: order.itens,
-        value: order.value,
-        idPayment: order.idPayment,
-      });
-    });
-  }
-  
+        const orderData = { ...updatedOrderData, idOrder: orderId }
 
-  // async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order | null> {
-  //     const db = await this.getDb();
-  //     const result = await db.collection(this.collection).findOneAndUpdate(
-  //         { orderId },
-  //         { $set: { status } },
-  //         { returnOriginal: false }
-  //     ).exec();
-  //     return result.value;
-  // }
+        await dbCollection.updateOne(query, { $set: orderData })
+    }
+
+    async deleteOrder(orderId: string): Promise<void> {
+        const db = await this.getDb()
+        await db
+            .collection(this.collection)
+            .deleteOne({ _id: new ObjectId(orderId) })
+    }
+
+    async updateOrderStatus(
+        orderId: string,
+        status: OrderStatus
+    ): Promise<Order | null> {
+        console.log(orderId, status)
+        throw new Error('Method not implemented.')
+    }
+
+    async listOrders(): Promise<Order[]> {
+        const db = await this.getDb()
+        const orders = await db.collection(this.collection).find().toArray()
+        return orders.map((order) => {
+            return new Order({
+                idOrder: order._id.toString(),
+                idClient: order.idClient,
+                cpf: order.cpf,
+                name: order.name,
+                email: order.email,
+                status: order.status,
+                itens: order.itens,
+                value: order.value,
+                idPayment: order.idPayment,
+            })
+        })
+    }
+
+    // async updateOrderStatus(
+    //     orderId: string,
+    //     status: OrderStatus
+    // ): Promise<Order | null> {
+    //     const db = await this.getDb()
+    //     const result = await db
+    //         .collection(this.collection)
+    //         .findOneAndUpdate(
+    //             { orderId },
+    //             { $set: { status } },
+    //             { returnOriginal: false }
+    //         )
+    //         .exec()
+    //     return result.value
+    // }
 }

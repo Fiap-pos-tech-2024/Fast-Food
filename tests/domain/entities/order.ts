@@ -8,7 +8,7 @@ export class Order {
         public idPayment: string | null,
         public status: string,
         public value: number,
-        public itens: Array<Object>
+        public itens: Array<object>
     ) {}
 
     static createMock(

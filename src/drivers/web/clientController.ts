@@ -1,6 +1,9 @@
 import { Router, Request, Response } from 'express'
 import { clientUseCase } from '../../useCases/client'
 
+interface errorType {
+    message: string
+}
 export class ClientController {
     private routes: Router
     private clientUseCase: clientUseCase
@@ -24,6 +27,7 @@ export class ClientController {
             const clients = await this.clientUseCase.listClients()
             res.status(200).json(clients)
         } catch (error) {
+            console.error(error)
             res.status(500).send('Error fetching clients')
         }
     }
@@ -33,14 +37,15 @@ export class ClientController {
             const clientData = req.body
             await this.clientUseCase.createClient(clientData)
             res.status(201).send('Client created successfully')
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const errorData = error as errorType
             const status_error: { [key: string]: number } = {
                 'Client already exists': 409,
             }
 
-            const status_code = status_error[error.message] || 500
-            const error_message = status_error[error.message]
-                ? error.message
+            const status_code = status_error[errorData.message] || 500
+            const error_message = status_error[errorData.message]
+                ? errorData.message
                 : 'Internal Server Error'
             res.status(status_code).json({ error: error_message })
         }
@@ -53,6 +58,7 @@ export class ClientController {
             await this.clientUseCase.updateClient(clientId, updatedClientData)
             res.status(200).send(`Client ${clientId} updated successfully`)
         } catch (error) {
+            console.error(error)
             res.status(500).send('Error updating client')
         }
     }
@@ -63,6 +69,7 @@ export class ClientController {
             await this.clientUseCase.deleteClient(clientId)
             res.status(200).send(`Client ${clientId} deleted successfully`)
         } catch (error) {
+            console.error(error)
             res.status(500).send('Error deleting client')
         }
     }
@@ -77,6 +84,7 @@ export class ClientController {
                 res.status(404).send('Client not found')
             }
         } catch (error) {
+            console.error(error)
             res.status(500).send('Error fetching client')
         }
     }

@@ -1,4 +1,4 @@
-import { NextFunction, Router, Request, Response } from 'express'
+import { Router } from 'express'
 
 export class healthCheckController {
     private routes: Router
@@ -12,7 +12,7 @@ export class healthCheckController {
         return this.routes
     }
 
-    public healthCheck(req: Request, res: Response, next: NextFunction) {
+    public healthCheck() {
         console.log('ok')
     }
 }

@@ -9,6 +9,7 @@ export class OrderUseCase {
   }
 
   async createOrder(order: Order): Promise<void> {
+    // validar se o produto existe.
     return await this.orderRepository.createOrder(order);
   } 
 

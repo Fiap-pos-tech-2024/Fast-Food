@@ -8,6 +8,10 @@ export enum OrderStatus {
     COMPLETED = 'COMPLETED',
 }
 
+export interface ProductId {
+  idProduct: string;
+}
+
 export class Order {
   public idOrder: string | null;
   public idClient: string | null;
@@ -17,7 +21,7 @@ export class Order {
   public idPayment: string | null;
   public status: OrderStatus;
   public value: number;
-  public itens: OrderItem[];
+  public itens: ProductId[];
 
   constructor(order: Order) {
     this.idOrder = order.idOrder;

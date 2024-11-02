@@ -1,4 +1,4 @@
-import { Order } from '../domain/entities/order'
+import { Order, OrderStatus } from '../domain/entities/order'
 import { OrderRepository } from '../domain/interface/orderRepository'
 
 export class OrderUseCase {
@@ -21,7 +21,7 @@ export class OrderUseCase {
         return this.orderRepository.deleteOrder(id)
     }
 
-    async updateOrderStatus(id: string, status: string): Promise<void> {
+    async updateOrderStatus(id: string, status: OrderStatus): Promise<void> {
         return this.orderRepository.updateOrderStatus(id, status)
     }
 

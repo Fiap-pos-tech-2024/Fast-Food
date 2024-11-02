@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express'
 import { OrderUseCase } from '../../useCases/order'
+import { ORDER_STATUS_LIST } from '../../constants/order'
 
 export class OrderController {
     private routes: Router
@@ -109,6 +110,11 @@ export class OrderController {
     public async updateOrderStatus(req: Request, res: Response): Promise<void> {
         const orderId = req.params.id
         const { status } = req.body
+
+        if (!ORDER_STATUS_LIST.includes(status)) {
+            res.status(400).json({ error: 'Invalid status provided' })
+            return
+        }
 
         try {
             await this.OrderUseCase.updateOrderStatus(orderId, status)

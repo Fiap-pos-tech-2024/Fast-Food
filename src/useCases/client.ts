@@ -1,7 +1,7 @@
 import { ClientRepository } from '../domain/interface/clientRepository'
 import { Client } from '../domain/entities/client'
 
-export class clientUseCase {
+export class ClientUseCase {
     private clientRepository: ClientRepository
 
     constructor(clientRepository: ClientRepository) {

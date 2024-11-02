@@ -13,7 +13,7 @@ export class OrderController {
         this.routes.get('/:id', this.getOrder.bind(this))
         this.routes.get('/', this.listOrders.bind(this))
         this.routes.post('/', this.createOrder.bind(this))
-        this.routes.patch('/update-status', this.updateOrderStatus.bind(this))
+        this.routes.patch('/:id/status', this.updateOrderStatus.bind(this))
         return this.routes
     }
 
@@ -71,7 +71,7 @@ export class OrderController {
 
     /**
      * @swagger
-     * /orders/update-status:
+     * /orders/:id/status:
      *   put:
      *     summary: Update order status
      *     tags:
@@ -107,14 +107,12 @@ export class OrderController {
      */
 
     public async updateOrderStatus(req: Request, res: Response): Promise<void> {
-        const { orderId, status } = req.body
+        const orderId = req.params.id
+        const { status } = req.body
 
         try {
-            const updatedOrder = await this.OrderUseCase.updateOrderStatus(
-                orderId,
-                status
-            )
-            res.status(200).json(updatedOrder)
+            await this.OrderUseCase.updateOrderStatus(orderId, status)
+            res.status(200).send(`Order status ${orderId} updated successfully`)
         } catch (error) {
             res.status(500).json({ error })
         }

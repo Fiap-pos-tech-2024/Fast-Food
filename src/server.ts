@@ -7,6 +7,7 @@ import { ClientUseCase } from './useCases/client'
 import { MongoClientRepository } from './drivers/database/clientModel'
 import { MongoOrderRepository } from './drivers/database/orderModel'
 import { OrderUseCase } from './useCases/order'
+import swaggerRouter from './config/swaggerConfig'
 
 class initProject {
     public express: express.Application
@@ -42,6 +43,7 @@ class initProject {
 
         const routesHealthCheckController = new healthCheckController()
         this.express.use('/health', routesHealthCheckController.setupRoutes())
+        this.express.use('/api-docs', swaggerRouter)
     }
 
     startServer() {

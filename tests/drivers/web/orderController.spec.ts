@@ -69,9 +69,7 @@ describe('OrderController', () => {
 
             expect(mockOrderUseCase.createOrder).toHaveBeenCalledWith(req.body)
             expect(res.status).toHaveBeenCalledWith(201)
-            expect(res.send).toHaveBeenCalledWith(
-                'Order created successfullyfully'
-            )
+            expect(res.send).toHaveBeenCalledWith('Order created successfully')
         })
 
         it('should return 409 if order already exists', async () => {

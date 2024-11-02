@@ -55,7 +55,8 @@ export class MongoOrderRepository implements OrderRepository {
         const dbCollection = db.collection(this.collection)
         const query = { _id: new ObjectId(orderId) }
 
-        await dbCollection.updateOne(query, { $set: updatedOrderData })
+        const orderData = { ...updatedOrderData, idOrder: orderId }
+        await dbCollection.updateOne(query, { $set: orderData })
     }
 
     async deleteOrder(orderId: string): Promise<void> {

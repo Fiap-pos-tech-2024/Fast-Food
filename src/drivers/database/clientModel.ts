@@ -30,7 +30,7 @@ export class MongoClientRepository implements ClientRepository {
         const db = await this.getDb()
         const clients = await db.collection(this.collection).find().toArray()
         return clients.map(
-            (client: any) =>
+            (client) =>
                 new Client(
                     client._id.toString(),
                     client.cpf,

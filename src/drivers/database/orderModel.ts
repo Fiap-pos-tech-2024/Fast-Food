@@ -56,7 +56,6 @@ export class MongoOrderRepository implements OrderRepository {
         const query = { _id: new ObjectId(orderId) }
 
         const orderData = { ...updatedOrderData, idOrder: orderId }
-
         await dbCollection.updateOne(query, { $set: orderData })
     }
 
@@ -70,9 +69,12 @@ export class MongoOrderRepository implements OrderRepository {
     async updateOrderStatus(
         orderId: string,
         status: OrderStatus
-    ): Promise<Order | null> {
-        console.log(orderId, status)
-        throw new Error('Method not implemented.')
+    ): Promise<void> {
+        const db = await this.getDb()
+        const dbCollection = db.collection(this.collection)
+        const query = { _id: new ObjectId(orderId) }
+
+        await dbCollection.updateOne(query, { $set: { status } })
     }
 
     async listOrders(): Promise<Order[]> {
@@ -92,20 +94,4 @@ export class MongoOrderRepository implements OrderRepository {
             })
         })
     }
-
-    // async updateOrderStatus(
-    //     orderId: string,
-    //     status: OrderStatus
-    // ): Promise<Order | null> {
-    //     const db = await this.getDb()
-    //     const result = await db
-    //         .collection(this.collection)
-    //         .findOneAndUpdate(
-    //             { orderId },
-    //             { $set: { status } },
-    //             { returnOriginal: false }
-    //         )
-    //         .exec()
-    //     return result.value
-    // }
 }

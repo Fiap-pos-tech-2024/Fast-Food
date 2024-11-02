@@ -3,7 +3,7 @@ import { OrderController } from './drivers/web/orderController'
 import { healthCheckController } from './drivers/web/healthCheckController'
 import { ClientController } from './drivers/web/clientController'
 import { MongoConnection } from './config/mongoConfig'
-import { clientUseCase } from './useCases/client'
+import { ClientUseCase } from './useCases/client'
 import { MongoClientRepository } from './drivers/database/clientModel'
 import { MongoOrderRepository } from './drivers/database/orderModel'
 import { OrderUseCase } from './useCases/order'
@@ -31,12 +31,12 @@ class initProject {
 
     setupRoutes() {
         const clientRepository = new MongoClientRepository(this.mongoConnection)
-        const clientCase = new clientUseCase(clientRepository)
-        const routesClientController = new ClientController(clientCase)
+        const clientUseCase = new ClientUseCase(clientRepository)
+        const routesClientController = new ClientController(clientUseCase)
         this.express.use('/client', routesClientController.setupRoutes())
 
         const orderRepository = new MongoOrderRepository(this.mongoConnection)
-        const orderUseCase = new OrderUseCase(orderRepository)
+        const orderUseCase = new OrderUseCase(orderRepository, clientRepository)
         const routesOrderController = new OrderController(orderUseCase)
         this.express.use('/order', routesOrderController.setupRoutes())
 

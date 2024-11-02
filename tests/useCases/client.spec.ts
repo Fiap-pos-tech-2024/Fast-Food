@@ -1,10 +1,10 @@
-import { clientUseCase } from '../../src/useCases/client'
+import { ClientUseCase } from '../../src/useCases/client'
 import { ClientRepository } from '../../src/domain/interface/clientRepository'
 import { Client } from '../../src/domain/entities/client'
 
 describe('clientUseCase', () => {
     let clientRepository: jest.Mocked<ClientRepository>
-    let useCase: clientUseCase
+    let useCase: ClientUseCase
 
     beforeEach(() => {
         clientRepository = {
@@ -15,7 +15,7 @@ describe('clientUseCase', () => {
             delete: jest.fn(),
             findById: jest.fn(),
         }
-        useCase = new clientUseCase(clientRepository)
+        useCase = new ClientUseCase(clientRepository)
     })
 
     describe('listClients', () => {

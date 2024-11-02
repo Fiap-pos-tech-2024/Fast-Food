@@ -9,7 +9,7 @@ export class OrderUseCase {
     ) {}
 
     async getOrder(id: string): Promise<Order | null> {
-        return await this.orderRepository.getOrder(id)
+        return this.orderRepository.getOrder(id)
     }
 
     async createOrder(order: Order): Promise<void> {
@@ -28,7 +28,7 @@ export class OrderUseCase {
                 throw new Error('Client does not exist')
             }
         }
-        return await this.orderRepository.createOrder(order)
+        return this.orderRepository.createOrder(order)
     }
 
     async updateOrder(id: string, order: Order) {
@@ -36,7 +36,7 @@ export class OrderUseCase {
         if (!existingOrder) {
             throw new Error('Order does not exist')
         }
-        return await this.orderRepository.updateOrder(id, order)
+        return this.orderRepository.updateOrder(id, order)
     }
 
     async deleteOrder(id: string) {
@@ -44,14 +44,14 @@ export class OrderUseCase {
         if (!existingOrder) {
             throw new Error('Order does not exist')
         }
-        return await this.orderRepository.deleteOrder(id)
+        return this.orderRepository.deleteOrder(id)
     }
 
-    async updateOrderStatus(id: string, status: string): Promise<Order | null> {
-        return await this.orderRepository.updateOrderStatus(id, status)
+    async updateOrderStatus(id: string, status: string): Promise<void> {
+        return this.orderRepository.updateOrderStatus(id, status)
     }
 
     async listOrders(): Promise<Order[]> {
-        return await this.orderRepository.listOrders()
+        return this.orderRepository.listOrders()
     }
 }

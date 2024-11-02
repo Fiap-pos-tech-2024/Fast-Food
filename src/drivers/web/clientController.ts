@@ -1,14 +1,14 @@
 import { Router, Request, Response } from 'express'
-import { clientUseCase } from '../../useCases/client'
+import { ClientUseCase } from '../../useCases/client'
 
 interface errorType {
     message: string
 }
 export class ClientController {
     private routes: Router
-    private clientUseCase: clientUseCase
+    private clientUseCase: ClientUseCase
 
-    constructor(clientUseCase: clientUseCase) {
+    constructor(clientUseCase: ClientUseCase) {
         this.routes = Router()
         this.clientUseCase = clientUseCase
     }

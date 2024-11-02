@@ -3,6 +3,7 @@ import { OrderRepository } from '../../src/domain/interface/orderRepository'
 import { Order } from '../../src/domain/entities/order'
 import { ClientRepository } from '../../src/domain/interface/clientRepository'
 import { Client } from '../domain/entities/client'
+import { ORDER_STATUS } from '../../src/constants/order'
 
 describe('orderUseCase', () => {
     let OrderRepository: jest.Mocked<OrderRepository>
@@ -261,21 +262,10 @@ describe('orderUseCase', () => {
     })
 
     describe('updateOrderStatus', () => {
-        it('should update order data if order exists', async () => {
+        it('should send correctly params', async () => {
             const orderId = '1'
-            const status = 'RECEIVED'
-            const orderData: Order = {
-                idOrder: '1',
-                idPayment: null,
-                idClient: null,
-                cpf: null,
-                name: null,
-                email: null,
-                status: 'RECEIVED',
-                value: 10,
-            } as Order
-
-            OrderRepository.updateOrderStatus.mockResolvedValue(orderData)
+            const status = ORDER_STATUS.IN_PREPARATION
+            OrderRepository.updateOrderStatus.mockResolvedValue()
 
             await useCase.updateOrderStatus(orderId, status)
 

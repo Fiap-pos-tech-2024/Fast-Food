@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import { ClientController } from '../../../src/drivers/web/clientController'
-import { clientUseCase } from '../../../src/useCases/client'
+import { ClientUseCase } from '../../../src/useCases/client'
 import { Client } from '../../domain/entities/client'
 
 describe('ClientController', () => {
     let clientController: ClientController
-    let mockClientUseCase: jest.Mocked<clientUseCase>
+    let mockClientUseCase: jest.Mocked<ClientUseCase>
     let req: Partial<Request>
     let res: Partial<Response>
 
@@ -17,7 +17,7 @@ describe('ClientController', () => {
             deleteClient: jest.fn(),
             getClient: jest.fn(),
             clientRepository: {},
-        } as unknown as jest.Mocked<clientUseCase>
+        } as unknown as jest.Mocked<ClientUseCase>
 
         clientController = new ClientController(mockClientUseCase)
 

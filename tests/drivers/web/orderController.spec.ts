@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { OrderController } from '../../../src/drivers/web/orderController'
 import { OrderUseCase } from '../../../src/useCases/order'
 import { Order } from '../../domain/entities/order'
+import { ORDER_STATUS } from '../../../src/constants/order'
 
 describe('OrderController', () => {
     let orderController: OrderController
@@ -203,10 +204,10 @@ describe('OrderController', () => {
     })
 
     describe('updateOrderStatus', () => {
-        it('should update a order status', async () => {
-            req.body = Order.createMock()
-            const updateOrder = Order.createMock()
-            mockOrderUseCase.updateOrderStatus.mockResolvedValue(updateOrder)
+        it('should update a order status with success', async () => {
+            req.params = { id: '1' }
+            req.body = { status: ORDER_STATUS.RECEIVED }
+            mockOrderUseCase.updateOrderStatus.mockResolvedValue(undefined)
 
             await orderController.updateOrderStatus(
                 req as Request,
@@ -218,24 +219,30 @@ describe('OrderController', () => {
                 'RECEIVED'
             )
             expect(res.status).toHaveBeenCalledWith(200)
-            expect(res.json).toHaveBeenCalledWith(updateOrder)
+            expect(res.send).toHaveBeenCalledWith(
+                `Order status 1 updated successfully`
+            )
         })
 
-        it('should return 404 if order not found', async () => {
-            req.body = Order.createMock()
-            mockOrderUseCase.updateOrderStatus.mockResolvedValue(null)
+        it('should return 400 for invalid status', async () => {
+            req.params = { id: '1' }
+            req.body = { status: 'INVALID' }
+            mockOrderUseCase.updateOrderStatus.mockResolvedValue(undefined)
 
             await orderController.updateOrderStatus(
                 req as Request,
                 res as Response
             )
 
-            expect(res.status).toHaveBeenCalledWith(404)
-            expect(res.json).toHaveBeenCalledWith({ error: 'Order not found' })
+            expect(res.status).toHaveBeenCalledWith(400)
+            expect(res.json).toHaveBeenCalledWith({
+                error: 'Invalid status provided',
+            })
         })
 
         it('should return 500 on error', async () => {
-            req.body = Order.createMock()
+            req.params = { id: '1' }
+            req.body = { status: ORDER_STATUS.RECEIVED }
             mockOrderUseCase.updateOrder.mockRejectedValue(
                 new Error('An unexpected error occurred')
             )

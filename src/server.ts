@@ -36,7 +36,7 @@ class initProject {
         this.express.use('/client', routesClientController.setupRoutes())
 
         const orderRepository = new MongoOrderRepository(this.mongoConnection)
-        const orderUseCase = new OrderUseCase(orderRepository)
+        const orderUseCase = new OrderUseCase(orderRepository, clientRepository)
         const routesOrderController = new OrderController(orderUseCase)
         this.express.use('/order', routesOrderController.setupRoutes())
 

@@ -7,6 +7,9 @@ import { clientUseCase } from './useCases/client'
 import { MongoClientRepository } from './drivers/database/clientModel'
 import { MongoOrderRepository } from './drivers/database/orderModel'
 import { OrderUseCase } from './useCases/order'
+import { MongoPaymentRepository } from './drivers/database/paymentModel' 
+import { PaymentUseCase } from './useCases/payment'
+import { PaymentController } from './drivers/web/paymentController'
 
 class initProject {
     public express: express.Application
@@ -38,10 +41,15 @@ class initProject {
         const orderRepository = new MongoOrderRepository(this.mongoConnection)
         const orderUseCase = new OrderUseCase(orderRepository)
         const routesOrderController = new OrderController(orderUseCase)
-        this.express.use('/order', routesOrderController.setupRoutes())
+        this.express.use('/order', routesOrderController.setupRoutes()) 
 
         const routesHealthCheckController = new healthCheckController()
         this.express.use('/health', routesHealthCheckController.setupRoutes())
+
+        const paymentRepository = new MongoPaymentRepository(this.mongoConnection)
+        const paymentUseCase = new PaymentUseCase(paymentRepository)
+        const paymentController = new PaymentController(paymentUseCase)
+        this.express.use('/payment', paymentController.setupRoutes())
     }
 
     startServer() {

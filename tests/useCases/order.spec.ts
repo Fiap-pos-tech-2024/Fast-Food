@@ -259,4 +259,30 @@ describe('orderUseCase', () => {
             expect(OrderRepository.getOrder).toHaveBeenCalledWith(orderId)
         })
     })
+
+    describe('updateOrderStatus', () => {
+        it('should update order data if order exists', async () => {
+            const orderId = '1'
+            const status = 'RECEIVED'
+            const orderData: Order = {
+                idOrder: '1',
+                idPayment: null,
+                idClient: null,
+                cpf: null,
+                name: null,
+                email: null,
+                status: 'RECEIVED',
+                value: 10,
+            } as Order
+
+            OrderRepository.updateOrderStatus.mockResolvedValue(orderData)
+
+            await useCase.updateOrderStatus(orderId, status)
+
+            expect(OrderRepository.updateOrderStatus).toHaveBeenCalledWith(
+                orderId,
+                status
+            )
+        })
+    })
 })

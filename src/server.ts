@@ -1,54 +1,54 @@
-import express from 'express';
-import { OrderController } from './drivers/web/orderController';
-import { healthCheckController } from './drivers/web/healthCheckController';
-import { ClientController } from './drivers/web/clientController';
-import { MongoConnection } from './config/mongoConfig';
-import { clientUseCase } from './useCases/client';
-import { MongoClientRepository } from './drivers/database/clientModel';
-import { MongoOrderRepository } from './drivers/database/orderModel';
-import { OrderUseCase } from './useCases/order';
+import express from 'express'
+import { OrderController } from './drivers/web/orderController'
+import { healthCheckController } from './drivers/web/healthCheckController'
+import { ClientController } from './drivers/web/clientController'
+import { MongoConnection } from './config/mongoConfig'
+import { ClientUseCase } from './useCases/client'
+import { MongoClientRepository } from './drivers/database/clientModel'
+import { MongoOrderRepository } from './drivers/database/orderModel'
+import { OrderUseCase } from './useCases/order'
 
 class initProject {
-  public express: express.Application;
-  public mongoConnection: MongoConnection;
+    public express: express.Application
+    public mongoConnection: MongoConnection
 
-  constructor() {
-    this.express = express();
-    this.mongoConnection = MongoConnection.getInstance();
-    this.start();
-  }
-
-  async start() {
-    try {
-      await this.mongoConnection.connect();
-      this.express.use(express.json());
-      this.setupRoutes();
-      this.startServer();
-    } catch (error) {
-      console.error('Failed to start application:', error);
+    constructor() {
+        this.express = express()
+        this.mongoConnection = MongoConnection.getInstance()
+        this.start()
     }
-  }
 
-  setupRoutes() {
-    const clientRepository = new MongoClientRepository(this.mongoConnection);
-    const clientCase = new clientUseCase(clientRepository);
-    const routesClientController = new ClientController(clientCase);
-    this.express.use('/client', routesClientController.setupRoutes());
+    async start() {
+        try {
+            await this.mongoConnection.connect()
+            this.express.use(express.json())
+            this.setupRoutes()
+            this.startServer()
+        } catch (error) {
+            console.error('Failed to start application:', error)
+        }
+    }
 
-    const orderRepository = new MongoOrderRepository(this.mongoConnection);
-    const orderUseCase = new OrderUseCase(orderRepository);
-    const routesOrderController = new OrderController(orderUseCase);
-    this.express.use('/order', routesOrderController.setupRoutes());
+    setupRoutes() {
+        const clientRepository = new MongoClientRepository(this.mongoConnection)
+        const clientCase = new ClientUseCase(clientRepository)
+        const routesClientController = new ClientController(clientCase)
+        this.express.use('/client', routesClientController.setupRoutes())
 
-    const routesHealthCheckController = new healthCheckController();
-    this.express.use('/health', routesHealthCheckController.setupRoutes());
-  }
+        const orderRepository = new MongoOrderRepository(this.mongoConnection)
+        const orderUseCase = new OrderUseCase(orderRepository)
+        const routesOrderController = new OrderController(orderUseCase)
+        this.express.use('/order', routesOrderController.setupRoutes())
 
-  startServer() {
-    this.express.listen(3000, () => {
-      console.log('Server is running on port 3000');
-    });
-  }
+        const routesHealthCheckController = new healthCheckController()
+        this.express.use('/health', routesHealthCheckController.setupRoutes())
+    }
+
+    startServer() {
+        this.express.listen(3000, () => {
+            console.log('Server is running on port 3000')
+        })
+    }
 }
 
 new initProject()

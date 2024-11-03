@@ -34,7 +34,8 @@ describe('PaymentController', () => {
         it('should create a new payment', async () => {
             const mockedPayment = Payment.createMock()
             req.body = mockedPayment
-            mockPaymentUseCase.createPayment.mockResolvedValue(mockedPayment)
+            const fakePayloadReturn = { id: '1' }
+            mockPaymentUseCase.createPayment.mockResolvedValue(fakePayloadReturn)
 
             await paymentController.createPayment(
                 req as Request,
@@ -45,7 +46,7 @@ describe('PaymentController', () => {
                 req.body
             )
             expect(res.status).toHaveBeenCalledWith(201)
-            expect(res.json).toHaveBeenCalledWith(mockedPayment)
+            expect(res.json).toHaveBeenCalledWith(fakePayloadReturn)
         })
 
         it('should return 500 if create payment link failed', async () => {

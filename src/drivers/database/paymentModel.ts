@@ -15,15 +15,17 @@ export class MongoPaymentRepository {
         return this.mongoConnection.getDatabase()
     }
 
-    async createPayment(payment: Payment): Promise<void> {
+    async createPayment(payment: Payment): Promise<{id: string}> {
         const db = await this.getDb()
-        await db.collection(this.collection).insertOne({
+        const payments = await db.collection(this.collection).insertOne({
             _id: new ObjectId(),
             order: payment.order,
             paymentLink: payment.paymentLink,
             status: payment.status,
             total: payment.total,
         })
+
+        return {id: payments.insertedId.toString()};
     }
 
     async getPayment(paymentId: string): Promise<Payment | null> {

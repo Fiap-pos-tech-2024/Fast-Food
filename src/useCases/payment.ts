@@ -9,7 +9,7 @@ export class PaymentUseCase {
         private orderRepository: OrderRepository
     ) {}
 
-    async createPayment(payment: Payment): Promise<{id: string}> {
+    async createPayment(payment: Payment): Promise<{ id: string }> {
         if (!payment.order.idOrder) {
             throw new Error('Order ID is required')
         }

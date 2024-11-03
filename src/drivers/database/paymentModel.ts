@@ -15,7 +15,7 @@ export class MongoPaymentRepository {
         return this.mongoConnection.getDatabase()
     }
 
-    async createPayment(payment: Payment): Promise<{id: string}> {
+    async createPayment(payment: Payment): Promise<{ id: string }> {
         const db = await this.getDb()
         const payments = await db.collection(this.collection).insertOne({
             _id: new ObjectId(),
@@ -25,7 +25,7 @@ export class MongoPaymentRepository {
             total: payment.total,
         })
 
-        return {id: payments.insertedId.toString()};
+        return { id: payments.insertedId.toString() }
     }
 
     async getPayment(paymentId: string): Promise<Payment | null> {

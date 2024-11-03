@@ -35,7 +35,9 @@ describe('PaymentController', () => {
             const mockedPayment = Payment.createMock()
             req.body = mockedPayment
             const fakePayloadReturn = { id: '1' }
-            mockPaymentUseCase.createPayment.mockResolvedValue(fakePayloadReturn)
+            mockPaymentUseCase.createPayment.mockResolvedValue(
+                fakePayloadReturn
+            )
 
             await paymentController.createPayment(
                 req as Request,

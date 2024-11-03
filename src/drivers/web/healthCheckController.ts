@@ -1,18 +1,23 @@
-import { Router } from 'express'
+import { Router, Request, Response } from 'express';
+import { HealthCheckUseCase } from '../../useCases/healthCheck';
 
-export class healthCheckController {
-    private routes: Router
+export class HealthCheckController {
+    private router: Router;
+    private healthUseCase: HealthCheckUseCase;
 
-    constructor() {
-        this.routes = Router()
+    constructor(healthUseCase: HealthCheckUseCase) {
+        this.router = Router();
+        this.healthUseCase = healthUseCase;
+        this.setupRoutes();
     }
 
-    public setupRoutes() {
-        this.routes.get('/', this.healthCheck)
-        return this.routes
+    public setupRoutes(): Router {
+        this.router.get('/', this.healthCheck.bind(this));
+        return this.router;
     }
 
-    public healthCheck() {
-        console.log('ok')
+    private healthCheck(req: Request, res: Response): void {
+        this.healthUseCase.healthCheck();
+        res.status(200).json({ status: 'UP' });
     }
 }

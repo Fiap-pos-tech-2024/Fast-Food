@@ -20,6 +20,7 @@ export class ProductController {
         this.routes.delete('/:id', this.deleteProduct.bind(this))
         this.routes.get('/:id', this.getProduct.bind(this))
         this.routes.get('/', this.listProducts.bind(this))
+        this.routes.get('/category/:category', this.listProductsByCategory.bind(this)) 
         return this.routes
     }
 
@@ -69,6 +70,18 @@ export class ProductController {
             res.status(500).send('Error fetching products')
         }
     }
+
+
+    public async listProductsByCategory(req: Request, res: Response) {
+        try {
+            const category = req.params.category
+            const products = await this.productUseCase.listProductsByCategory(category)
+            res.status(200).json(products)
+        } catch (error) {
+            res.status(500).send('Error fetching products by category')
+        }
+    }
+
 
     /**
      * @swagger

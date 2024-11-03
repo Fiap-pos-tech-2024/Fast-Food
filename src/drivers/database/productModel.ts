@@ -21,6 +21,7 @@ export class MongoProductRepository implements ProductRepository {
             name: product.name,
             amount: product.amount,
             unitValue: product.unitValue,
+            category: product.category,
             observation: product.observation,
             createdAt: product.createdAt,
             updatedAt: product.updatedAt,

@@ -1,12 +1,4 @@
 import { Product } from './product'
-
-export enum OrderStatus {
-    RECEIVED = 'RECEIVED',
-    IN_PREPARATION = 'IN_PREPARATION',
-    READY = 'READY',
-    COMPLETED = 'COMPLETED',
-}
-
 export interface ProductId {
     idProduct: string
 }
@@ -18,7 +10,7 @@ export class Order {
     public name: string | null
     public email: string | null
     public idPayment: string | null
-    public status: OrderStatus
+    public status: string
     public value: number
     public itens: Product[]
 

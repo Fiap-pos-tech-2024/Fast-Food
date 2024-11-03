@@ -3,6 +3,7 @@ import { OrderRepository } from '../domain/interface/orderRepository'
 import { ClientRepository } from '../domain/interface/clientRepository'
 import { ProductRepository } from '../domain/interface/productRepository'
 import { Product } from '../domain/entities/product'
+import { ORDER_STATUS } from '../constants/order'
 
 export class OrderUseCase {
     constructor(
@@ -68,6 +69,7 @@ export class OrderUseCase {
         }
 
         order.itens = itemsDetails
+        order.status = ORDER_STATUS.AWAITING_PAYMENT
 
         return this.orderRepository.createOrder(order)
     }

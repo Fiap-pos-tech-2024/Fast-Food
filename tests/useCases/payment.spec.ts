@@ -35,8 +35,8 @@ describe('PaymentUseCase', () => {
             const paymentData: Payment = {
                 order: mockedOrder,
                 paymentId: '2',
-                paymentLink: 'some link',
-                status: 'STATUS',
+                paymentLink: 'https://fake-payment-link.com/1',
+                status: 'AWAITING',
                 total: 10,
             } as Payment
 
@@ -55,8 +55,8 @@ describe('PaymentUseCase', () => {
             const paymentData: Payment = {
                 order: mockedOrder,
                 paymentId: '2',
-                paymentLink: 'some link',
-                status: 'STATUS',
+                paymentLink: 'https://fake-payment-link.com/1',
+                status: 'AWAITING',
                 total: 10,
             } as Payment
 
@@ -76,8 +76,8 @@ describe('PaymentUseCase', () => {
             const paymentData: Payment = {
                 order: mockedOrder,
                 paymentId: '2',
-                paymentLink: 'some link',
-                status: 'STATUS',
+                paymentLink: 'https://fake-payment-link.com/1',
+                status: 'AWAITING',
                 total: 10,
             } as Payment
 
@@ -124,8 +124,8 @@ describe('PaymentUseCase', () => {
             const paymentData: Payment = {
                 order: mockedOrder,
                 paymentId: '2',
-                paymentLink: 'some link',
-                status: 'STATUS',
+                paymentLink: 'https://fake-payment-link.com/1',
+                status: 'AWAITING',
                 total: 10,
             } as Payment
 
@@ -150,8 +150,8 @@ describe('PaymentUseCase', () => {
             const paymentData: Payment = {
                 order: mockedOrder,
                 paymentId: '2',
-                paymentLink: 'some link',
-                status: 'STATUS',
+                paymentLink: 'https://fake-payment-link.com/1',
+                status: 'AWAITING',
                 total: 10,
             } as Payment
 

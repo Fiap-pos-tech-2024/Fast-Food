@@ -74,6 +74,14 @@ export class MongoOrderRepository implements OrderRepository {
         await dbCollection.updateOne(query, { $set: { status } })
     }
 
+    async updatePayment(orderId: string, paymentId: string): Promise<void> {
+        const db = await this.getDb()
+        const dbCollection = db.collection(this.collection)
+        const query = { _id: new ObjectId(orderId) }
+
+        await dbCollection.updateOne(query, { $set: { idPayment: paymentId } })
+    }
+
     async listOrders(): Promise<Order[]> {
         const db = await this.getDb()
         const orders = await db.collection(this.collection).find().toArray()

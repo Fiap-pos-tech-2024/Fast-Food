@@ -6,5 +6,6 @@ export interface OrderRepository {
     updateOrder(id: string, order: Order): Promise<void>
     deleteOrder(id: string): Promise<void>
     updateOrderStatus(orderId: string, status: string): Promise<void>
+    updatePayment(id: string, paymentId: string): Promise<void>
     listOrders(): Promise<Order[]>
 }

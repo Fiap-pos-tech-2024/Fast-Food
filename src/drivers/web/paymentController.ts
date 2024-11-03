@@ -1,21 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Router, Request, Response } from 'express'
 import { PaymentUseCase } from '../../useCases/payment'
-import { Payment } from '../../domain/entities/payment'
 
 export class PaymentController {
     private routes: Router
-
     constructor(private PaymentUseCase: PaymentUseCase) {
         this.routes = Router()
     }
 
     setupRoutes() {
-        const router = Router()
-        router.post('/', this.createPayment.bind(this))
-        router.get('/:id', this.getPayment.bind(this))
-        router.get('/:id/check', this.checkPaymentStatus.bind(this))
-        return router
+        this.routes.post('/', this.createPayment.bind(this))
+        this.routes.get('/:id', this.getPayment.bind(this))
+        this.routes.get('/:id/check', this.checkPaymentStatus.bind(this))
+        return this.routes
     }
 
     async createPayment(req: Request, res: Response) {

@@ -34,6 +34,19 @@ export class PaymentUseCase {
     }
 
     async checkPaymentStatus(id: string): Promise<{ status: string } | null> {
-        return this.paymentRepository.checkPaymentStatus(id)
+        const resultStatusPayment =
+            await this.paymentRepository.checkPaymentStatus(id)
+        if (resultStatusPayment?.status === PAYMENT_STATUS.PAID) {
+            const paidOrder = await this.getPayment(id)
+            if (paidOrder?.order?.idOrder) {
+                this.orderRepository.updatePayment(
+                    paidOrder?.order?.idOrder,
+                    id
+                )
+                return resultStatusPayment
+            }
+            throw new Error('Order not found')
+        }
+        return resultStatusPayment
     }
 }

@@ -21,7 +21,12 @@ describe('ProductUseCase', () => {
     describe('listProducts', () => {
         it('should return a list of products', async () => {
             const products: Product[] = [
-                { idProduct: '1', name: 'Product 1', amount: 10, unitValue: 5 } as Product,
+                {
+                    idProduct: '1',
+                    name: 'Product 1',
+                    amount: 10,
+                    unitValue: 5,
+                } as Product,
             ]
             productRepository.list.mockResolvedValue(products)
 
@@ -36,14 +41,22 @@ describe('ProductUseCase', () => {
         it('should return a list of products by category', async () => {
             const category = 'Electronics'
             const products: Product[] = [
-                { idProduct: '1', name: 'Product 1', category: 'Electronics', amount: 10, unitValue: 5 } as Product,
+                {
+                    idProduct: '1',
+                    name: 'Product 1',
+                    category: 'Electronics',
+                    amount: 10,
+                    unitValue: 5,
+                } as Product,
             ]
             productRepository.findByCategory.mockResolvedValue(products)
 
             const result = await useCase.listProductsByCategory(category)
 
             expect(result).toEqual(products)
-            expect(productRepository.findByCategory).toHaveBeenCalledWith(category)
+            expect(productRepository.findByCategory).toHaveBeenCalledWith(
+                category
+            )
             expect(productRepository.findByCategory).toHaveBeenCalledTimes(1)
         })
     })
@@ -67,24 +80,38 @@ describe('ProductUseCase', () => {
     describe('updateProduct', () => {
         it('should update product data if product exists', async () => {
             const productId = '1'
-            const existingProduct = { idProduct: '1', name: 'Old Product', amount: 10, unitValue: 5 } as Product
-            const updatedProductData: Partial<Product> = { name: 'Updated Product' }
+            const existingProduct = {
+                idProduct: '1',
+                name: 'Old Product',
+                amount: 10,
+                unitValue: 5,
+            } as Product
+            const updatedProductData: Partial<Product> = {
+                name: 'Updated Product',
+            }
 
             productRepository.findById.mockResolvedValue(existingProduct)
 
             await useCase.updateProduct(productId, updatedProductData)
 
             expect(productRepository.findById).toHaveBeenCalledWith(productId)
-            expect(productRepository.update).toHaveBeenCalledWith(productId, expect.objectContaining(updatedProductData))
+            expect(productRepository.update).toHaveBeenCalledWith(
+                productId,
+                expect.objectContaining(updatedProductData)
+            )
         })
 
         it('should throw an error if product does not exist', async () => {
             const productId = '1'
-            const updatedProductData: Partial<Product> = { name: 'Updated Product' }
+            const updatedProductData: Partial<Product> = {
+                name: 'Updated Product',
+            }
 
             productRepository.findById.mockResolvedValue(null)
 
-            await expect(useCase.updateProduct(productId, updatedProductData)).rejects.toThrow('Product does not exist')
+            await expect(
+                useCase.updateProduct(productId, updatedProductData)
+            ).rejects.toThrow('Product does not exist')
             expect(productRepository.update).not.toHaveBeenCalled()
         })
     })
@@ -92,7 +119,12 @@ describe('ProductUseCase', () => {
     describe('deleteProduct', () => {
         it('should delete a product by id if the product exists', async () => {
             const productId = '1'
-            const productData: Product = { idProduct: '1', name: 'Test Product', amount: 10, unitValue: 5 } as Product
+            const productData: Product = {
+                idProduct: '1',
+                name: 'Test Product',
+                amount: 10,
+                unitValue: 5,
+            } as Product
 
             productRepository.findById.mockResolvedValue(productData)
 
@@ -106,7 +138,9 @@ describe('ProductUseCase', () => {
             const productId = '1'
             productRepository.findById.mockResolvedValue(null)
 
-            await expect(useCase.deleteProduct(productId)).rejects.toThrow('Product does not exist')
+            await expect(useCase.deleteProduct(productId)).rejects.toThrow(
+                'Product does not exist'
+            )
             expect(productRepository.delete).not.toHaveBeenCalled()
         })
     })
@@ -114,7 +148,12 @@ describe('ProductUseCase', () => {
     describe('getProduct', () => {
         it('should return a product by id', async () => {
             const productId = '1'
-            const productData: Product = { idProduct: '1', name: 'Test Product', amount: 10, unitValue: 5 } as Product
+            const productData: Product = {
+                idProduct: '1',
+                name: 'Test Product',
+                amount: 10,
+                unitValue: 5,
+            } as Product
             productRepository.findById.mockResolvedValue(productData)
 
             const result = await useCase.getProduct(productId)

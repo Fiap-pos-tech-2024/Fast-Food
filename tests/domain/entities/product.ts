@@ -10,7 +10,7 @@ export class Product {
         public deletedAt: Date | null = null,
         public observation: string | null = null,
         public calculateTotalValue: () => number = () => {
-            return this.amount * this.unitValue;
+            return this.amount * this.unitValue
         }
     ) {}
 
@@ -36,6 +36,6 @@ export class Product {
             deletedAt,
             observation,
             () => amount * unitValue
-        );
+        )
     }
 }

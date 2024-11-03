@@ -1,4 +1,4 @@
-import { Product } from "./product"
+import { Product } from './product'
 
 export enum OrderStatus {
     RECEIVED = 'RECEIVED',
@@ -23,14 +23,14 @@ export class Order {
     public itens: Product[]
 
     constructor(order: Omit<Order, 'idOrder'> & { idOrder?: string }) {
-        this.idOrder = order.idOrder || null;
-        this.idClient = order.idClient || null;
-        this.cpf = order.cpf || null;
-        this.name = order.name || null;
-        this.email = order.email || null;
-        this.idPayment = order.idPayment || null;
-        this.status = order.status;
-        this.itens = order.itens ?? [];
-        this.value = order.value;
+        this.idOrder = order.idOrder || null
+        this.idClient = order.idClient || null
+        this.cpf = order.cpf || null
+        this.name = order.name || null
+        this.email = order.email || null
+        this.idPayment = order.idPayment || null
+        this.status = order.status
+        this.itens = order.itens ?? []
+        this.value = order.value
     }
 }

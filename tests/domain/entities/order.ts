@@ -12,7 +12,7 @@ export class Order {
         public status: OrderStatus,
         public value: number,
         public itens: Array<Product>
-    ) { }
+    ) {}
 
     static createMock(
         idOrder = '1',
@@ -23,9 +23,21 @@ export class Order {
         idPayment = null,
         status = OrderStatus.RECEIVED,
         value = 10,
-        itens = [{
-            idProduct: 'Item 1', amount: 2, name: 'Item 1', unitValue: 1, category: '1', totalValue: 2, observation: '', createdAt: new Date(), updatedAt: new Date(), deletedAt: null, calculateTotalValue: () => 2
-        }]
+        itens = [
+            {
+                idProduct: 'Item 1',
+                amount: 2,
+                name: 'Item 1',
+                unitValue: 1,
+                category: '1',
+                totalValue: 2,
+                observation: '',
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                deletedAt: null,
+                calculateTotalValue: () => 2,
+            },
+        ]
     ): Order {
         return new Order(
             idOrder,

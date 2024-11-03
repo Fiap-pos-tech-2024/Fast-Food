@@ -20,7 +20,10 @@ export class ProductController {
         this.routes.delete('/:id', this.deleteProduct.bind(this))
         this.routes.get('/:id', this.getProduct.bind(this))
         this.routes.get('/', this.listProducts.bind(this))
-        this.routes.get('/category/:category', this.listProductsByCategory.bind(this)) 
+        this.routes.get(
+            '/category/:category',
+            this.listProductsByCategory.bind(this)
+        )
         return this.routes
     }
 
@@ -71,17 +74,16 @@ export class ProductController {
         }
     }
 
-
     public async listProductsByCategory(req: Request, res: Response) {
         try {
             const category = req.params.category
-            const products = await this.productUseCase.listProductsByCategory(category)
+            const products =
+                await this.productUseCase.listProductsByCategory(category)
             res.status(200).json(products)
         } catch (error) {
             res.status(500).send('Error fetching products by category')
         }
     }
-
 
     /**
      * @swagger
@@ -173,7 +175,10 @@ export class ProductController {
         try {
             const productId = req.params.id
             const updatedProductData = req.body
-            await this.productUseCase.updateProduct(productId, updatedProductData)
+            await this.productUseCase.updateProduct(
+                productId,
+                updatedProductData
+            )
             res.status(200).send(`Product ${productId} updated successfully`)
         } catch (error) {
             res.status(500).send('Error updating product')

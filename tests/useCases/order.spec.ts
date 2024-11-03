@@ -40,7 +40,11 @@ describe('orderUseCase', () => {
             delete: jest.fn(),
         }
 
-        useCase = new OrderUseCase(OrderRepository, clientRepository, productRepository)
+        useCase = new OrderUseCase(
+            OrderRepository,
+            clientRepository,
+            productRepository
+        )
     })
 
     describe('listOrders', () => {
@@ -77,11 +81,11 @@ describe('orderUseCase', () => {
                 value: 10,
                 itens: [
                     {
-                        idProduct: "6726be94d9bec010f0fdf613",
+                        idProduct: '6726be94d9bec010f0fdf613',
                         amount: 10,
-                        observation: "Observação opcional sobre o item"
-                    }
-                ]
+                        observation: 'Observação opcional sobre o item',
+                    },
+                ],
             } as Order
 
             const clientData: Client = {
@@ -129,15 +133,15 @@ describe('orderUseCase', () => {
                 value: 10,
                 itens: [
                     {
-                        idProduct: "6726be94d9bec010f0fdf613",
+                        idProduct: '6726be94d9bec010f0fdf613',
                         amount: 10,
-                        observation: "Observação opcional sobre o item"
-                    }
-                ]
+                        observation: 'Observação opcional sobre o item',
+                    },
+                ],
             } as Order
 
             clientRepository.findById.mockResolvedValue(null)
-            
+
             await useCase.createOrder(orderData)
 
             expect(OrderRepository.createOrder).toHaveBeenCalledWith(orderData)

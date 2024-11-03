@@ -9,7 +9,7 @@ export class OrderUseCase {
         private orderRepository: OrderRepository,
         private clientRepository: ClientRepository,
         private productRepository: ProductRepository
-    ) { }
+    ) {}
 
     async getOrder(id: string): Promise<Order | null> {
         return this.orderRepository.getOrder(id)
@@ -17,33 +17,37 @@ export class OrderUseCase {
 
     async createOrder(order: Order): Promise<void> {
         if (order.itens?.length === 0) {
-            throw new Error('Order must have at least one item');
+            throw new Error('Order must have at least one item')
         }
 
         if (order.idOrder) {
-            const existingOrder = await this.getOrder(order.idOrder);
+            const existingOrder = await this.getOrder(order.idOrder)
             if (existingOrder) {
-                throw new Error('Order already exists');
+                throw new Error('Order already exists')
             }
         }
 
         if (order.idClient) {
-            const existingClient = await this.clientRepository.findById(order.idClient);
+            const existingClient = await this.clientRepository.findById(
+                order.idClient
+            )
             if (!existingClient) {
-                throw new Error('Client does not exist');
+                throw new Error('Client does not exist')
             }
         }
 
-        let itemsDetails: Product[] = [];
-        order.value = 0;
+        let itemsDetails: Product[] = []
+        order.value = 0
 
         for (const item of order.itens) {
-            const existingProduct = await this.productRepository.findById(item.idProduct);
+            const existingProduct = await this.productRepository.findById(
+                item.idProduct
+            )
 
             if (!existingProduct) {
-                continue;
+                continue
             }
-0
+            0
             const productDetail = new Product({
                 idProduct: existingProduct.idProduct,
                 name: existingProduct.name,
@@ -53,22 +57,20 @@ export class OrderUseCase {
                 createdAt: new Date(),
                 updatedAt: null,
                 deletedAt: null,
-                category: existingProduct.category, 
-                calculateTotalValue: function() {
-                    return this.unitValue * this.amount;
-                }
-            });
-   
-            itemsDetails.push(productDetail);
-            order.value += productDetail.calculateTotalValue(); 
+                category: existingProduct.category,
+                calculateTotalValue: function () {
+                    return this.unitValue * this.amount
+                },
+            })
+
+            itemsDetails.push(productDetail)
+            order.value += productDetail.calculateTotalValue()
         }
 
-        order.itens = itemsDetails;
+        order.itens = itemsDetails
 
-        return this.orderRepository.createOrder(order);
+        return this.orderRepository.createOrder(order)
     }
-
-
 
     async updateOrder(id: string, order: Order) {
         const existingOrder = await this.getOrder(id)

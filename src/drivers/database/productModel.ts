@@ -28,44 +28,54 @@ export class MongoProductRepository implements ProductRepository {
             deletedAt: product.deletedAt,
         })
 
-        product.idProduct = result.insertedId.toString(); 
+        product.idProduct = result.insertedId.toString()
     }
 
     async list(): Promise<Product[]> {
         const db = await this.getDb()
         const products = await db.collection(this.collection).find().toArray()
-        return products.map((product) =>
-            new Product({
-                idProduct: product._id.toString(),
-                name: product.name,
-                amount: product.amount,
-                unitValue: product.unitValue,
-                observation: product.observation,
-                createdAt: product.createdAt,
-                updatedAt: product.updatedAt,
-                deletedAt: product.deletedAt,
-                category: product.category, 
-                calculateTotalValue: product.calculateTotalValue
-            })
+        return products.map(
+            (product) =>
+                new Product({
+                    idProduct: product._id.toString(),
+                    name: product.name,
+                    amount: product.amount,
+                    unitValue: product.unitValue,
+                    observation: product.observation,
+                    createdAt: product.createdAt,
+                    updatedAt: product.updatedAt,
+                    deletedAt: product.deletedAt,
+                    category: product.category,
+                    calculateTotalValue: product.calculateTotalValue,
+                })
         )
     }
 
-    async update(productId: string, updatedProductData: Partial<Product>): Promise<void> {
+    async update(
+        productId: string,
+        updatedProductData: Partial<Product>
+    ): Promise<void> {
         const db = await this.getDb()
-        await db.collection(this.collection).updateOne(
-            { _id: new ObjectId(productId) },
-            { $set: updatedProductData }
-        )
+        await db
+            .collection(this.collection)
+            .updateOne(
+                { _id: new ObjectId(productId) },
+                { $set: updatedProductData }
+            )
     }
 
     async delete(productId: string): Promise<void> {
         const db = await this.getDb()
-        await db.collection(this.collection).deleteOne({ _id: new ObjectId(productId) }) 
+        await db
+            .collection(this.collection)
+            .deleteOne({ _id: new ObjectId(productId) })
     }
 
     async findById(idProduct: string): Promise<Product | null> {
         const db = await this.getDb()
-        const product = await db.collection(this.collection).findOne({ _id: new ObjectId(idProduct) });
+        const product = await db
+            .collection(this.collection)
+            .findOne({ _id: new ObjectId(idProduct) })
         if (product) {
             return new Product({
                 idProduct: product._id.toString(),
@@ -76,30 +86,33 @@ export class MongoProductRepository implements ProductRepository {
                 createdAt: product.createdAt,
                 updatedAt: product.updatedAt,
                 deletedAt: product.deletedAt,
-                category: product.category, 
-                calculateTotalValue: product.calculateTotalValue
-            });
+                category: product.category,
+                calculateTotalValue: product.calculateTotalValue,
+            })
         }
-        return null;
+        return null
     }
 
     async findByCategory(category: string): Promise<Product[]> {
-        const db = await this.getDb();
-        const products = await db.collection(this.collection).find({ category }).toArray();
-        return products.map((product) =>
-            new Product({
-                idProduct: product._id.toString(),
-                name: product.name,
-                amount: product.amount,
-                unitValue: product.unitValue,
-                observation: product.observation,
-                createdAt: product.createdAt,
-                updatedAt: product.updatedAt,
-                deletedAt: product.deletedAt,
-                category: product.category,
-                calculateTotalValue: product.calculateTotalValue
-            })
-        );
+        const db = await this.getDb()
+        const products = await db
+            .collection(this.collection)
+            .find({ category })
+            .toArray()
+        return products.map(
+            (product) =>
+                new Product({
+                    idProduct: product._id.toString(),
+                    name: product.name,
+                    amount: product.amount,
+                    unitValue: product.unitValue,
+                    observation: product.observation,
+                    createdAt: product.createdAt,
+                    updatedAt: product.updatedAt,
+                    deletedAt: product.deletedAt,
+                    category: product.category,
+                    calculateTotalValue: product.calculateTotalValue,
+                })
+        )
     }
-
 }

@@ -1,5 +1,5 @@
 import { MongoConnection } from '../../config/mongoConfig'
-import { Order, OrderStatus } from '../../domain/entities/order'
+import { Order } from '../../domain/entities/order'
 import { OrderRepository } from '../../domain/interface/orderRepository'
 import { ObjectId } from 'mongodb'
 
@@ -66,10 +66,7 @@ export class MongoOrderRepository implements OrderRepository {
             .deleteOne({ _id: new ObjectId(orderId) })
     }
 
-    async updateOrderStatus(
-        orderId: string,
-        status: OrderStatus
-    ): Promise<void> {
+    async updateOrderStatus(orderId: string, status: string): Promise<void> {
         const db = await this.getDb()
         const dbCollection = db.collection(this.collection)
         const query = { _id: new ObjectId(orderId) }

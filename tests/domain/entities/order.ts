@@ -1,4 +1,4 @@
-import { OrderStatus } from '../../../src/domain/entities/order'
+import { ORDER_STATUS } from '../../../src/constants/order'
 import { Product } from '../../../src/domain/entities/product'
 
 export class Order {
@@ -9,7 +9,7 @@ export class Order {
         public name: string | null,
         public email: string | null,
         public idPayment: string | null,
-        public status: OrderStatus,
+        public status: string,
         public value: number,
         public itens: Array<Product>
     ) {}
@@ -21,7 +21,7 @@ export class Order {
         name = 'John Doe',
         email = 'john@example.com',
         idPayment = null,
-        status = OrderStatus.RECEIVED,
+        status = ORDER_STATUS.RECEIVED,
         value = 10,
         itens = [
             {

@@ -84,7 +84,6 @@ export class OrderController {
             const orders = await this.OrderUseCase.listOrders()
             res.status(200).json(orders)
         } catch (error) {
-            console.error(error)
             res.status(500).json({ error: 'Error fetching orders' })
         }
     }
@@ -176,12 +175,14 @@ export class OrderController {
             if (!order) {
                 res.status(404).json({ error: 'Order not created' })
             }
+
             await this.OrderUseCase.createOrder(order)
             res.status(201).send('Order created successfully')
         } catch (error) {
             const errorData = error as errorType
             const status_error: { [key: string]: number } = {
                 'Order already exists': 409,
+                'Product does not exist': 400,
             }
 
             const status_code = status_error[errorData.message] || 500
@@ -267,7 +268,6 @@ export class OrderController {
             await this.OrderUseCase.updateOrder(orderId, updatedUserData)
             res.status(200).send(`Order ${orderId} updated successfully`)
         } catch (error) {
-            console.error(error)
             res.status(500).json({ error: 'An unexpected error occurred' })
         }
     }
@@ -308,7 +308,6 @@ export class OrderController {
             await this.OrderUseCase.deleteOrder(orderId)
             res.status(200).send(`Order ${orderId} deleted successfully`)
         } catch (error) {
-            console.error(error)
             res.status(500).json({
                 error: 'An unexpected error occurred',
             })
@@ -393,7 +392,6 @@ export class OrderController {
             }
             res.status(404).send('Order not found')
         } catch (error) {
-            console.error(error)
             res.status(500).json({ error: 'An unexpected error occurred' })
         }
     }

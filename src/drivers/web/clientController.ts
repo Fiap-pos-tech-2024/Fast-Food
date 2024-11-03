@@ -66,7 +66,6 @@ export class ClientController {
             const clients = await this.clientUseCase.listClients()
             res.status(200).json(clients)
         } catch (error) {
-            console.error(error)
             res.status(500).send('Error fetching clients')
         }
     }
@@ -210,7 +209,6 @@ export class ClientController {
             await this.clientUseCase.updateClient(clientId, updatedClientData)
             res.status(200).send(`Client ${clientId} updated successfully`)
         } catch (error) {
-            console.error(error)
             res.status(500).send('Error updating client')
         }
     }
@@ -262,7 +260,6 @@ export class ClientController {
             await this.clientUseCase.deleteClient(clientId)
             res.status(200).send(`Client ${clientId} deleted successfully`)
         } catch (error) {
-            console.error(error)
             res.status(500).send('Error deleting client')
         }
     }
@@ -331,7 +328,6 @@ export class ClientController {
                 res.status(404).send('Client not found')
             }
         } catch (error) {
-            console.error(error)
             res.status(500).send('Error fetching client')
         }
     }

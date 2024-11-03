@@ -1,3 +1,5 @@
+import { Product } from "./product"
+
 export enum OrderStatus {
     RECEIVED = 'RECEIVED',
     IN_PREPARATION = 'IN_PREPARATION',
@@ -18,17 +20,17 @@ export class Order {
     public idPayment: string | null
     public status: OrderStatus
     public value: number
-    public itens: ProductId[]
+    public itens: Product[]
 
-    constructor(order: Order) {
-        this.idOrder = order.idOrder
-        this.idClient = order.idClient
-        this.cpf = order.cpf
-        this.name = order.name
-        this.email = order.email
-        this.idPayment = order.idPayment
-        this.status = order.status
-        this.itens = order.itens ?? []
-        this.value = order.value
+    constructor(order: Omit<Order, 'idOrder'> & { idOrder?: string }) {
+        this.idOrder = order.idOrder || null;
+        this.idClient = order.idClient || null;
+        this.cpf = order.cpf || null;
+        this.name = order.name || null;
+        this.email = order.email || null;
+        this.idPayment = order.idPayment || null;
+        this.status = order.status;
+        this.itens = order.itens ?? [];
+        this.value = order.value;
     }
 }

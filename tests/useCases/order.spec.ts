@@ -4,10 +4,12 @@ import { Order } from '../../src/domain/entities/order'
 import { ClientRepository } from '../../src/domain/interface/clientRepository'
 import { Client } from '../domain/entities/client'
 import { ORDER_STATUS } from '../../src/constants/order'
+import { ProductRepository } from '../../src/domain/interface/productRepository'
 
 describe('orderUseCase', () => {
     let OrderRepository: jest.Mocked<OrderRepository>
     let clientRepository: jest.Mocked<ClientRepository>
+    let productRepository: jest.Mocked<ProductRepository>
     let useCase: OrderUseCase
 
     beforeEach(() => {
@@ -28,7 +30,17 @@ describe('orderUseCase', () => {
             delete: jest.fn(),
             findById: jest.fn(),
         }
-        useCase = new OrderUseCase(OrderRepository, clientRepository)
+
+        productRepository = {
+            findById: jest.fn(),
+            findByCategory: jest.fn(),
+            list: jest.fn(),
+            save: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+        }
+
+        useCase = new OrderUseCase(OrderRepository, clientRepository, productRepository)
     })
 
     describe('listOrders', () => {
@@ -58,15 +70,18 @@ describe('orderUseCase', () => {
     describe('createOrder', () => {
         it('should save a new order with client info', async () => {
             const orderData: Order = {
-                idOrder: null,
-                idPayment: null,
-                idClient: '1',
                 cpf: '000.000.000-00',
                 name: 'John Doe',
                 email: 'new@example.com',
                 status: 'RECEIVED',
                 value: 10,
-                itens: [{ idProduct: 'Item 1' }, { idProduct: 'Item 2' }],
+                itens: [
+                    {
+                        idProduct: "6726be94d9bec010f0fdf613",
+                        amount: 10,
+                        observation: "Observação opcional sobre o item"
+                    }
+                ]
             } as Order
 
             const clientData: Client = {
@@ -112,10 +127,17 @@ describe('orderUseCase', () => {
                 email: null,
                 status: 'RECEIVED',
                 value: 10,
+                itens: [
+                    {
+                        idProduct: "6726be94d9bec010f0fdf613",
+                        amount: 10,
+                        observation: "Observação opcional sobre o item"
+                    }
+                ]
             } as Order
 
             clientRepository.findById.mockResolvedValue(null)
-
+            
             await useCase.createOrder(orderData)
 
             expect(OrderRepository.createOrder).toHaveBeenCalledWith(orderData)

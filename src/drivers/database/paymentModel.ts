@@ -54,6 +54,8 @@ export class MongoPaymentRepository {
         if (!payment) {
             throw new Error('Payment not found')
         }
+
+        // Fake payment success
         return { status: PAYMENT_STATUS.PAID }
     }
 }

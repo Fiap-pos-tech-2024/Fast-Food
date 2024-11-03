@@ -1,4 +1,5 @@
 import { HealthCheckUseCase } from '../../src/useCases/healthCheck'
+import { mockedHealthCheck } from '../domain/health/health'
 
 describe('HealthCheckService', () => {
     let healthCheckService: HealthCheckUseCase
@@ -7,10 +8,9 @@ describe('HealthCheckService', () => {
         healthCheckService = new HealthCheckUseCase()
     })
 
-    it('should log "Health Check"', () => {
-        const consoleSpy = jest.spyOn(console, 'log')
-        healthCheckService.healthCheck()
-        expect(consoleSpy).toHaveBeenCalledWith('Health Check')
-        consoleSpy.mockRestore()
+    it('should return "Health Check"', () => {
+        const result = healthCheckService.healthCheck()
+
+        expect(result).toEqual(mockedHealthCheck)
     })
 })

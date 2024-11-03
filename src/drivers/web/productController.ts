@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Router, Request, Response } from 'express'
 import { ProductUseCase } from '../../useCases/product'
 

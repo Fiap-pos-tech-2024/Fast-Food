@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Router, Request, Response } from 'express'
 import { OrderUseCase } from '../../useCases/order'
 import { ORDER_STATUS_LIST } from '../../constants/order'

@@ -36,7 +36,7 @@ export class OrderUseCase {
             }
         }
 
-        let itemsDetails: Product[] = []
+        const itemsDetails: Product[] = []
         order.value = 0
 
         for (const item of order.itens) {
@@ -47,7 +47,7 @@ export class OrderUseCase {
             if (!existingProduct) {
                 continue
             }
-            0
+
             const productDetail = new Product({
                 idProduct: existingProduct.idProduct,
                 name: existingProduct.name,

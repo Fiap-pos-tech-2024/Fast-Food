@@ -17,7 +17,7 @@ export class HealthCheckController {
     }
 
     private healthCheck(req: Request, res: Response): void {
-        this.healthUseCase.healthCheck()
-        res.status(200).json({ status: 'UP' })
+        const result = this.healthUseCase.healthCheck()
+        res.status(200).json(result)
     }
 }

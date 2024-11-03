@@ -1,6 +1,7 @@
 import { HealthCheckController } from '../../../src/drivers/web/healthCheckController'
 import { HealthCheckUseCase } from '../../../src/useCases/healthCheck'
 import { Request, Response } from 'express'
+import { mockedHealthCheck } from '../../domain/health/health'
 
 describe('HealthCheckController', () => {
     let healthCheckController: HealthCheckController
@@ -18,10 +19,10 @@ describe('HealthCheckController', () => {
         }
     })
 
-    it('should return status UP', () => {
+    it('should return health check status', () => {
         healthCheckController['healthCheck'](req as Request, res as Response)
 
         expect(res.status).toHaveBeenCalledWith(200)
-        expect(res.json).toHaveBeenCalledWith({ status: 'UP' })
+        expect(res.json).toHaveBeenCalledWith(mockedHealthCheck)
     })
 })

@@ -19,6 +19,7 @@ describe('orderUseCase', () => {
             updateOrder: jest.fn(),
             deleteOrder: jest.fn(),
             updateOrderStatus: jest.fn(),
+            updatePayment: jest.fn(),
             listOrders: jest.fn(),
         }
 

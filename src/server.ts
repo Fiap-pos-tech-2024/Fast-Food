@@ -12,6 +12,9 @@ import { MongoProductRepository } from './drivers/database/productModel'
 import { OrderUseCase } from './useCases/order'
 import swaggerRouter from './config/swaggerConfig'
 import { HealthCheckUseCase } from './useCases/healthCheck'
+import { MongoPaymentRepository } from './drivers/database/paymentModel'
+import { PaymentUseCase } from './useCases/payment'
+import { PaymentController } from './drivers/web/paymentController'
 
 class InitProject {
     public express: express.Application
@@ -58,6 +61,17 @@ class InitProject {
         )
         const routesOrderController = new OrderController(orderUseCase)
         this.express.use('/order', routesOrderController.setupRoutes())
+
+        // Configuração do Pagamento
+        const paymentRepository = new MongoPaymentRepository(
+            this.mongoConnection
+        )
+        const paymentUseCase = new PaymentUseCase(
+            paymentRepository,
+            orderRepository
+        )
+        const paymentController = new PaymentController(paymentUseCase)
+        this.express.use('/payment', paymentController.setupRoutes())
 
         // Configuração do Health Check e Swagger
         const healthCheckUseCase = new HealthCheckUseCase()

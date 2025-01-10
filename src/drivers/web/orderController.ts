@@ -450,4 +450,100 @@ export class OrderController {
             res.status(500).json({ error })
         }
     }
+
+    /**
+     * @swagger
+     * /order/active-orders:
+     *   get:
+     *     summary: Lista pedidos ativos e pagos
+     *     description: Retorna apenas pedidos com status ativo (RECEIVED, IN_PREPARATION, READY) que já foram pagos.
+     *     tags: [Orders]
+     *     responses:
+     *       200:
+     *         description: Lista de pedidos ativos e pagos retornada com sucesso
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   idOrder:
+     *                     type: string
+     *                     description: ID do pedido
+     *                     example: "order_123456"
+     *                   idClient:
+     *                     type: string
+     *                     description: ID do cliente
+     *                     example: "client_001"
+     *                   cpf:
+     *                     type: string
+     *                     description: CPF do cliente
+     *                     example: "000.000.000-00"
+     *                   name:
+     *                     type: string
+     *                     description: Nome do cliente
+     *                     example: "John Doe"
+     *                   email:
+     *                     type: string
+     *                     description: E-mail do cliente
+     *                     example: "john@example.com"
+     *                   idPayment:
+     *                     type: string
+     *                     description: ID do pagamento
+     *                     example: "payment_abc123"
+     *                   status:
+     *                     type: string
+     *                     enum: [RECEIVED, IN_PREPARATION, READY]
+     *                     description: Status do pedido
+     *                     example: "IN_PREPARATION"
+     *                   value:
+     *                     type: number
+     *                     description: Valor total do pedido
+     *                     example: 29.90
+     *                   itens:
+     *                     type: array
+     *                     items:
+     *                       type: object
+     *                       properties:
+     *                         idProduct:
+     *                           type: string
+     *                           description: ID do produto no pedido
+     *                           example: "product_001"
+     *                         name:
+     *                           type: string
+     *                           description: Nome do produto
+     *                           example: "Hambúrguer"
+     *                         amount:
+     *                           type: integer
+     *                           description: Quantidade do produto
+     *                           example: 2
+     *                         unitValue:
+     *                           type: number
+     *                           description: Valor unitário do produto
+     *                           example: 14.95
+     *                         observation:
+     *                           type: string
+     *                           description: Observações sobre o produto
+     *                           example: "Sem cebola"
+     *       500:
+     *         description: Erro interno ao buscar os pedidos ativos
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 error:
+     *                   type: string
+     *                   description: Mensagem de erro
+     *                   example: "Error fetching active orders"
+     */
+    public async listActiveOrders(req: Request, res: Response) {
+        try {
+            const activeOrders = await this.OrderUseCase.getActiveOrders()
+            res.status(200).json(activeOrders)
+        } catch (error) {
+            res.status(500).json({ error: 'Error fetching active orders' })
+        }
+    }
 }

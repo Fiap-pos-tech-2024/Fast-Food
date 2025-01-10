@@ -302,4 +302,81 @@ describe('orderUseCase', () => {
             )
         })
     })
+    describe('getActiveOrders', () => {
+        it('should return only active and paid orders, sorted by creation date', async () => {
+            const ordersData: Order[] = [
+                {
+                    idOrder: '1',
+                    idPayment: 'pay_123',
+                    idClient: '1',
+                    cpf: '000.000.000-00',
+                    name: 'John Doe',
+                    email: 'john@example.com',
+                    status: 'RECEIVED',
+                    value: 10,
+                    itens: [
+                        {
+                            idProduct: 'Item 1',
+                            name: 'Produto 1',
+                            amount: 2,
+                            unitValue: 5.0,
+                            observation: '',
+                            createdAt: new Date('2024-01-01T09:00:00Z'),
+                            updatedAt: new Date('2024-01-01T10:00:00Z'),
+                            deletedAt: null,
+                            category: 'Lanche',
+                            calculateTotalValue: () => 10.0,
+                        },
+                        {
+                            idProduct: 'Item 1',
+                            name: 'Produto 1',
+                            amount: 2,
+                            unitValue: 5.0,
+                            observation: '',
+                            createdAt: new Date('2024-01-01T09:00:00Z'),
+                            updatedAt: new Date('2024-01-01T10:00:00Z'),
+                            deletedAt: null,
+                            category: 'Lanche',
+                            calculateTotalValue: () => 10.0,
+                        },
+                    ],
+                    createdAt: new Date('2024-01-01T10:00:00Z'),
+                } as Order,
+                {
+                    idOrder: '2',
+                    idPayment: 'pay_456',
+                    idClient: '2',
+                    cpf: '111.111.111-11',
+                    name: 'Jane Doe',
+                    email: 'jane@example.com',
+                    status: 'IN_PREPARATION',
+                    value: 20,
+                    itens: [
+                        {
+                            idProduct: 'Item 1',
+                            name: 'Produto 1',
+                            amount: 2,
+                            unitValue: 5.0,
+                            observation: '',
+                            createdAt: new Date('2024-01-01T09:00:00Z'),
+                            updatedAt: new Date('2024-01-01T10:00:00Z'),
+                            deletedAt: null,
+                            category: 'Lanche',
+                            calculateTotalValue: () => 10.0,
+                        },
+                    ],
+                    createdAt: new Date('2024-01-02T12:00:00Z'),
+                } as Order,
+            ]
+
+            OrderRepository.listOrders.mockResolvedValue(ordersData)
+
+            const result = await useCase.getActiveOrders()
+
+            expect(result).toHaveLength(2)
+            expect(result[0].idOrder).toBe('1')
+            expect(result[1].idOrder).toBe('2')
+            expect(OrderRepository.listOrders).toHaveBeenCalledTimes(1)
+        })
+    })
 })

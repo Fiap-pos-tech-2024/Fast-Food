@@ -15,6 +15,9 @@ export class OrderUseCase {
     async getOrder(id: string): Promise<Order | null> {
         return this.orderRepository.getOrder(id)
     }
+    async getActiveOrders(): Promise<Order[]> {
+        return this.orderRepository.listOrders()
+    }
 
     async createOrder(order: Order): Promise<void> {
         if (order.itens?.length === 0) {

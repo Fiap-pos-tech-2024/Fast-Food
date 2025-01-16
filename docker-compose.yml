@@ -6,7 +6,7 @@ services:
         ports:
             - '3000:3000'
         environment:
-            - MONGODB_URI=mongodb://mongo:27017/seu_banco_de_dados # Alterar para o banco de dados
+            - MONGODB_URI=mongodb://mongo:27017/mong # Alterar para o banco de dados
         depends_on:
             - mongo
         volumes:

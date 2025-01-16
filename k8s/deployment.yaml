@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fast-food-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fast-food
+  template:
+    metadata:
+      labels:
+        app: fast-food
+    spec:
+      containers:
+        - name: fast-food
+          image: maickway/fast-food-api:tagname
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGODB_URI
+              value: mongodb://localhost:27017/mong
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: fast-food-config
+                  key: APP_ENV
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: fast-food-config
+                  key: LOG_LEVEL
+        - name: mongo
+          image: mongo:latest
+          ports:
+            - containerPort: 27017

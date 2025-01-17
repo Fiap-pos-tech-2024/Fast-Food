@@ -24,7 +24,7 @@ export class MongoOrderRepository implements OrderRepository {
             name: order.name,
             email: order.email,
             status: order.status,
-            itens: order.itens,
+            itens: order.items,
             value: order.value,
         })
     }
@@ -42,7 +42,7 @@ export class MongoOrderRepository implements OrderRepository {
                 name: order.name,
                 email: order.email,
                 status: order.status,
-                itens: order.itens,
+                items: order.items,
                 value: order.value,
                 idPayment: order.idPayment,
             })
@@ -93,7 +93,7 @@ export class MongoOrderRepository implements OrderRepository {
                 name: order.name,
                 email: order.email,
                 status: order.status,
-                itens: order.itens,
+                items: order.items,
                 value: order.value,
                 idPayment: order.idPayment,
             })

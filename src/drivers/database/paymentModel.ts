@@ -18,7 +18,7 @@ export class MongoPaymentRepository {
     async createPayment(payment: Payment): Promise<{ id: string }> {
         const db = await this.getDb()
         const payments = await db.collection(this.collection).insertOne({
-            _id: new ObjectId(),
+            _id: new ObjectId(payment.paymentId ?? ''),
             order: payment.order,
             paymentLink: payment.paymentLink,
             status: payment.status,
@@ -43,6 +43,22 @@ export class MongoPaymentRepository {
             )
         }
         return null
+    }
+
+    async updatePaymentStatus(
+        paymentId: string,
+        status: string
+    ): Promise<void> {
+        const db = await this.getDb()
+        const dbCollection = db.collection(this.collection)
+        const query = { _id: new ObjectId(paymentId) }
+        console.log('AQUI', paymentId, status)
+        await dbCollection.updateOne(query, {
+            $set: {
+                status,
+                'order.status': status,
+            },
+        })
     }
 
     async checkPaymentStatus(

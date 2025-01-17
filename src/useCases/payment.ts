@@ -65,11 +65,11 @@ export class PaymentUseCase {
         const url = `${process.env.MERCADO_PAGO_QR_CODE_API}/${accessData.userId}/pos/Loja1/qrs`
 
         const data = {
-            external_reference: 'FastFood',
+            external_reference: order.idOrder,
             title: 'Product order',
             description: 'FastFood sale',
             notification_url:
-                'https://mercado-pago-webhook.free.beeceptor.com/payment/receiver',
+                'https://7996-152-254-159-137.ngrok-free.app/payment/receiver',
             total_amount: order.value,
             items: order.items.map((item: Product) => {
                 return {
@@ -126,16 +126,18 @@ export class PaymentUseCase {
         }
 
         const QRCodePaymentLink = await this.generateQRCode(payment.order)
-        const paymentCreated = this.paymentRepository.createPayment({
+        const paymentCreated = await this.paymentRepository.createPayment({
             ...payment,
             paymentLink: QRCodePaymentLink,
+            paymentId: payment.order.idOrder,
             status: PAYMENT_STATUS.AWAITING,
             total: payment.order.value,
         })
 
-        this.orderRepository.updateOrder(payment.order.idOrder, {
+        await this.orderRepository.updateOrder(payment.order.idOrder, {
             ...payment.order,
-            idPayment: QRCodePaymentLink,
+            paymentLink: QRCodePaymentLink,
+            paymentId: paymentCreated.id,
         })
 
         return paymentCreated
@@ -143,6 +145,19 @@ export class PaymentUseCase {
 
     async getPayment(id: string): Promise<Payment | null> {
         return this.paymentRepository.getPayment(id)
+    }
+
+    async updatePaymentStatus(orderId: string, paymentStatus: string) {
+        const existingOrder = await this.orderRepository.getOrder(orderId)
+        if (!existingOrder) {
+            throw new Error('Order does not exist')
+        }
+
+        await this.orderRepository.updateOrderStatus(orderId, paymentStatus)
+        return this.paymentRepository.updatePaymentStatus(
+            orderId,
+            paymentStatus
+        )
     }
 
     async checkPaymentStatus(id: string): Promise<{ status: string } | null> {

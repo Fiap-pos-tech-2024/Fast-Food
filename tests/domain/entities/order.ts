@@ -8,7 +8,8 @@ export class Order {
         public cpf: string | null,
         public name: string | null,
         public email: string | null,
-        public idPayment: string | null,
+        public paymentId: string | null,
+        public paymentLink: string | null,
         public status: string,
         public value: number,
         public items: Array<Product>
@@ -20,7 +21,8 @@ export class Order {
         cpf = '000.000.000-00',
         name = 'John Doe',
         email = 'john@example.com',
-        idPayment = null,
+        paymentLink = null,
+        paymentId = null,
         status = ORDER_STATUS.RECEIVED,
         value = 10,
         items = [
@@ -45,7 +47,8 @@ export class Order {
             cpf,
             name,
             email,
-            idPayment,
+            paymentId,
+            paymentLink,
             status,
             value,
             items

@@ -60,7 +60,7 @@ describe('orderUseCase', () => {
                     email: 'john@example.com',
                     status: 'RECEIVED',
                     value: 10,
-                    itens: [{ idProduct: 'Item 1' }, { idProduct: 'Item 2' }],
+                    items: [{ idProduct: 'Item 1' }, { idProduct: 'Item 2' }],
                 } as Order,
             ]
             OrderRepository.listOrders.mockResolvedValue(ordersData)
@@ -80,7 +80,7 @@ describe('orderUseCase', () => {
                 email: 'new@example.com',
                 status: 'RECEIVED',
                 value: 10,
-                itens: [
+                items: [
                     {
                         idProduct: '6726be94d9bec010f0fdf613',
                         amount: 10,
@@ -132,7 +132,7 @@ describe('orderUseCase', () => {
                 email: null,
                 status: 'RECEIVED',
                 value: 10,
-                itens: [
+                items: [
                     {
                         idProduct: '6726be94d9bec010f0fdf613',
                         amount: 10,

@@ -7,6 +7,10 @@ services:
             - '3000:3000'
         environment:
             - MONGODB_URI=mongodb://mongo:27017/seu_banco_de_dados # Alterar para o banco de dados
+            - MERCADO_PAGO_API=https://api.mercadopago.com
+            - MERCADO_PAGO_CLIENT_SECRET='IyaI124z9fuUZUPAjslnGvdo0S4IVF3t'
+            - MERCADO_PAGO_CLIENT_ID='1824214370596611'
+            - MERCADO_PAGO_QR_CODE_API=https://api.mercadopago.com/instore/orders/qr/seller/collectors
         depends_on:
             - mongo
         volumes:

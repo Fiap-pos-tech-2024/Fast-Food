@@ -12,7 +12,7 @@ export class Order {
     public idPayment: string | null
     public status: string
     public value: number
-    public itens: Product[]
+    public items: Product[]
 
     constructor(order: Omit<Order, 'idOrder'> & { idOrder?: string }) {
         this.idOrder = order.idOrder || null
@@ -22,7 +22,7 @@ export class Order {
         this.email = order.email || null
         this.idPayment = order.idPayment || null
         this.status = order.status
-        this.itens = order.itens ?? []
+        this.items = order.items ?? []
         this.value = order.value
     }
 }

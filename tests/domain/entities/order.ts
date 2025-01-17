@@ -11,7 +11,7 @@ export class Order {
         public idPayment: string | null,
         public status: string,
         public value: number,
-        public itens: Array<Product>
+        public items: Array<Product>
     ) {}
 
     static createMock(
@@ -23,7 +23,7 @@ export class Order {
         idPayment = null,
         status = ORDER_STATUS.RECEIVED,
         value = 10,
-        itens = [
+        items = [
             {
                 idProduct: 'Item 1',
                 amount: 2,
@@ -48,7 +48,7 @@ export class Order {
             idPayment,
             status,
             value,
-            itens
+            items
         )
     }
 }

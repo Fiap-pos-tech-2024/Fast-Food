@@ -44,7 +44,8 @@ export class MongoOrderRepository implements OrderRepository {
                 status: order.status,
                 items: order.items,
                 value: order.value,
-                idPayment: order.idPayment,
+                paymentLink: order.paymentLink,
+                paymentId: order.paymentId,
             })
         }
         return null
@@ -95,7 +96,8 @@ export class MongoOrderRepository implements OrderRepository {
                 status: order.status,
                 items: order.items,
                 value: order.value,
-                idPayment: order.idPayment,
+                paymentLink: order.paymentLink,
+                paymentId: order.paymentId,
             })
         })
     }

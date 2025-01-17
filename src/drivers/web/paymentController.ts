@@ -11,6 +11,7 @@ export class PaymentController {
     setupRoutes() {
         this.routes.post('/', this.createPayment.bind(this))
         this.routes.get('/:id', this.getPayment.bind(this))
+        this.routes.post('/receiver', this.paymentReceiver.bind(this))
         this.routes.get('/:id/check', this.checkPaymentStatus.bind(this))
         return this.routes
     }
@@ -208,6 +209,47 @@ export class PaymentController {
         } catch (error) {
             res.status(500).json({ error: 'An unexpected error occurred' })
         }
+    }
+
+    async getPaymentData(merchantUrl: string, accessDataToken: string) {
+        const response = await fetch(merchantUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: accessDataToken,
+            },
+        })
+        const result = (await response.json()) as {
+            external_reference: string
+            order_status: string
+        }
+        return {
+            orderId: result.external_reference,
+            status: result.order_status,
+        }
+    }
+
+    async paymentReceiver(req: Request, res: Response) {
+        console.log('PARAMS', req.params)
+        console.log('BODY', req.body)
+
+        const token =
+            'Bearer TEST-1824214370596611-011710-800a45987428cdff374d5c90415c07bb-2211997372'
+        if (req.body.topic === 'merchant_order') {
+            const paymentData = await this.getPaymentData(
+                req.body.resource,
+                token
+            )
+
+            if (paymentData.orderId) {
+                await this.PaymentUseCase.updatePaymentStatus(
+                    paymentData.orderId,
+                    paymentData.status
+                )
+            }
+        }
+
+        res.status(200).send('Dados recebidos com sucesso')
     }
 
     /**

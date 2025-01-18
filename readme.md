@@ -52,6 +52,7 @@ Para iniciar o projeto, você precisará ter o Docker e o Docker Compose instala
 npm install -g ngrok
 ngrok http 3000
 ```
+
 Esse comando indica a nossa porta da aplicação para redirecionar
 
 Obs: Caso seja a primeira vez, faça login conforme sugerido no terminal.
@@ -62,7 +63,7 @@ A documentação das APIs está disponível via Swagger. Após iniciar o projeto
 
 ## Comandos Kubernetes
 
-Usando minikube para rodar localmente, siga a [instalação aqui](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Farm64%2Fstable%2Fbinary+download#LoadBalancer), e rode o comando abaixo no seu terminal: 
+Usando minikube para rodar localmente, siga a [instalação aqui](https://minikube.sigs.k8s.io/docs/start/?arch=%2Fmacos%2Farm64%2Fstable%2Fbinary+download#LoadBalancer), e rode o comando abaixo no seu terminal:
 
 ```bash
 minikube start
@@ -93,35 +94,34 @@ kubectl delete -f k8s/secret.yaml
 
 ![Desenho da arquitetura Fase 2 - FIAP](./assets/FIAP_Fase2.png)
 
-1. 
+1.
 
-Os clientes criam os pedidos via totem, onde escolhem os produtos e fazem o pagamento do pedido. 
+Os clientes criam os pedidos via totem, onde escolhem os produtos e fazem o pagamento do pedido.
 Os funcionários visualizam e atualizam o status de um pedido quando este fica pronto.
 
-2. 
+2.
 
-Um container criado dentro de um cluster kubernetes, possuindo um load balancer, irá gerenciar o balanceamento de carga da aplicação. Bem como uma ingress que configura uma service e seu host de acesso.  
+Um container criado dentro de um cluster kubernetes, possuindo um load balancer, irá gerenciar o balanceamento de carga da aplicação. Bem como uma ingress que configura uma service e seu host de acesso.
 
-3. 
+3.
 
-O horizontal pod autoscaling (HPA), garante a escala do serviço quando se tem um aumento de utilização, através do load balancer, podemos configurar o uso de CPU e memória que irá ser o gatilho para que o serviço crie réplicas a fim de atender a demanda. 
+O horizontal pod autoscaling (HPA), garante a escala do serviço quando se tem um aumento de utilização, através do load balancer, podemos configurar o uso de CPU e memória que irá ser o gatilho para que o serviço crie réplicas a fim de atender a demanda.
 
-4. 
+4.
 
 Recurso do banco de dados em MongoDB configurado dentro do cluster
 
-5. 
+5.
 
 Consumo de APIs externa para gerenciar os pagamentos de pedidos, com o parceiro Mercado Pago.
 
-## Regras de negócio 
+## Regras de negócio
 
 Confira no passo-a-passo a seguir um fluxo de geração de pedido com pagamento feito via Mercado Pago.
 
-
 ### Criar cliente
 
-O fluxo para criação de um pedido ínicia na criação ou consulta de um cliente existente, caso este deseje se identificar. 
+O fluxo para criação de um pedido ínicia na criação ou consulta de um cliente existente, caso este deseje se identificar.
 
 ```bash
 POST
@@ -133,7 +133,6 @@ curl --location 'http://localhost:3000/client' \
   "email": "john@teste.com"
 }'
 ```
-
 
 ### Criar pedido
 
@@ -171,8 +170,8 @@ curl --location 'http://localhost:3000/payment/' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "order": {
-        "idOrder": "678b03caafba99ba4720f855", 
-        "idClient": "678b039fafba99ba4720f853", 
+        "idOrder": "678b03caafba99ba4720f855",
+        "idClient": "678b039fafba99ba4720f853",
         "cpf": "01234567897",
         "name": "john doe",
         "email": "john@teste.com",
@@ -196,7 +195,6 @@ curl --location 'http://localhost:3000/payment/' \
 
 Consulte o pagamento criado para gerar o QRcode de pagamento, informando o id de pagamento gerado.
 
-
 ```bash
 curl --location 'http://localhost:3000/payment/:idPayment' \
 --data ''
@@ -204,7 +202,7 @@ curl --location 'http://localhost:3000/payment/:idPayment' \
 
 ### Realizar pagamento
 
-Baixe o aplicativo do [Mercado Pago](https://www.mercadopago.com.br/c/app). 
+Baixe o aplicativo do [Mercado Pago](https://www.mercadopago.com.br/c/app).
 
 Para gerar uma compra de teste, você vai precisar criar uma conta de comprador teste, [veja aqui como](https://www.mercadopago.com.br/developers/pt/docs/subscriptions/additional-content/your-integrations/test/accounts).
 
@@ -221,4 +219,3 @@ curl --location 'http://localhost:3000/payment/:idPayment/status' \
 ```
 
 Deverá retornar com o status **paid**
-

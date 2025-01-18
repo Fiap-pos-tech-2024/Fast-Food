@@ -62,7 +62,7 @@ export class PaymentUseCase {
         return paymentCreated
     }
 
-    async getPayment(paymentId: string): Promise<Payment> {
+    async getPayment(paymentId: string): Promise<Payment | null> {
         const payment = await this.paymentRepository.getPayment(paymentId)
         if (!payment) {
             throw new Error('Payment not found')
@@ -77,9 +77,13 @@ export class PaymentUseCase {
         if (webhookData.topic !== 'merchant_order') return
 
         const mercadoPagoData =
-            await this.mercadoPagoController.getPaymentStatus(
+            (await this.mercadoPagoController.getPaymentStatus(
                 webhookData.resource
-            )
+            )) as { id: string; status: string }
+
+        if (!mercadoPagoData) {
+            throw new Error('Failed to get MercadoPago data')
+        }
 
         const paymentId = mercadoPagoData.id
         const paymentStatus = mercadoPagoData.status

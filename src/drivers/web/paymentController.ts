@@ -230,7 +230,6 @@ export class PaymentController {
     public async paymentWebhook(req: Request, res: Response): Promise<void> {
         try {
             const webhookData = req.body
-            console.log('webhookData', webhookData)
             await this.PaymentUseCase.handlePaymentWebhook(webhookData)
             res.status(200).send('Webhook processed successfully')
         } catch (error) {

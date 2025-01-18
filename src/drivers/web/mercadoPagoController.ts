@@ -92,7 +92,7 @@ export class MercadoPagoController {
 
     async getPaymentStatus(
         url: string
-    ): Promise<{ id: string; status: string }> {
+    ): Promise<{ id: string; status: string } | null> {
         try {
             const authData = await this.getUserToken()
             if (!authData?.token) throw new Error('Failed to fetch token')

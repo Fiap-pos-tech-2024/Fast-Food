@@ -53,7 +53,8 @@ describe('orderUseCase', () => {
             const ordersData: Order[] = [
                 {
                     idOrder: '123',
-                    idPayment: null,
+                    paymentId: null,
+                    paymentLink: null,
                     idClient: '1',
                     cpf: '000.000.000-00',
                     name: 'John Doe',
@@ -105,7 +106,8 @@ describe('orderUseCase', () => {
         it('should throw an error if order without client registry', async () => {
             const orderData: Order = {
                 idOrder: null,
-                idPayment: null,
+                paymentId: null,
+                paymentLink: null,
                 idClient: '1',
                 cpf: '000.000.000-00',
                 name: 'John Doe',
@@ -125,7 +127,8 @@ describe('orderUseCase', () => {
         it('should create a anonymous order if there is no client defined', async () => {
             const orderData: Order = {
                 idOrder: null,
-                idPayment: null,
+                paymentId: null,
+                paymentLink: null,
                 idClient: null,
                 cpf: null,
                 name: null,
@@ -153,7 +156,8 @@ describe('orderUseCase', () => {
         it('should not create an order if already exist', async () => {
             const orderData: Order = {
                 idOrder: '1',
-                idPayment: null,
+                paymentId: null,
+                paymentLink: null,
                 idClient: null,
                 cpf: null,
                 name: null,
@@ -181,7 +185,8 @@ describe('orderUseCase', () => {
             const orderId = '1'
             const updadatedOrderData: Order = {
                 idOrder: '1',
-                idPayment: null,
+                paymentId: null,
+                paymentLink: null,
                 idClient: null,
                 cpf: null,
                 name: null,
@@ -205,7 +210,8 @@ describe('orderUseCase', () => {
             const orderId = '1'
             const updadatedOrderData: Order = {
                 idOrder: '1',
-                idPayment: null,
+                paymentId: null,
+                paymentLink: null,
                 idClient: null,
                 cpf: null,
                 name: null,
@@ -228,7 +234,8 @@ describe('orderUseCase', () => {
             const orderId = '1'
             const orderData: Order = {
                 idOrder: '1',
-                idPayment: null,
+                paymentId: null,
+                paymentLink: null,
                 idClient: null,
                 cpf: null,
                 name: null,
@@ -261,7 +268,8 @@ describe('orderUseCase', () => {
             const orderId = '1'
             const orderData: Order = {
                 idOrder: '1',
-                idPayment: null,
+                paymentId: null,
+                paymentLink: null,
                 idClient: null,
                 cpf: null,
                 name: null,

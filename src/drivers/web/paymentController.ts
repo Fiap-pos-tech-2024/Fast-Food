@@ -19,10 +19,10 @@ export class PaymentController {
         try {
             const payment = req.body
             const result = await this.PaymentUseCase.createPayment(payment)
-            res.status(200).json(result)
+            res.status(201).json(result)
         } catch (error) {
             console.log('Failed to create payment link', error)
-            res.status(400).json('Failed to create payment link')
+            res.status(500).json({ error: 'Failed to create payment link' })
         }
     }
 
@@ -30,10 +30,12 @@ export class PaymentController {
         try {
             const { paymentId } = req.params
             const result = await this.PaymentUseCase.getPayment(paymentId)
+            if (!result) res.status(404).send('Payment not found')
+
             res.status(200).json(result)
         } catch (error) {
             console.log('Failed to get payment', error)
-            res.status(400).json('Failed to get payment')
+            res.status(500).json({ error: 'An unexpected error occurred' })
         }
     }
 
@@ -45,7 +47,7 @@ export class PaymentController {
             res.status(200).send('Webhook processed successfully')
         } catch (error) {
             console.log('Failed to process webhook info', error)
-            res.status(400).json('Failed to process webhook info')
+            res.status(400).json({ error: 'Failed to process webhook info' })
         }
     }
 }

@@ -54,9 +54,12 @@ export class OrderController {
      *                   email:
      *                     type: string
      *                     description: E-mail do cliente
-     *                   idPayment:
+     *                   paymentId:
      *                     type: string
      *                     description: ID do pagamento
+     *                   paymentLink:
+     *                     type: string
+     *                     description: Link do pagamento
      *                   status:
      *                     type: string
      *                     enum: [PENDING, RECEIVED, COMPLETED, CANCELED]
@@ -117,9 +120,12 @@ export class OrderController {
      *               email:
      *                 type: string
      *                 description: E-mail do cliente
-     *               idPayment:
+     *               paymentId:
      *                 type: string
      *                 description: ID do pagamento
+     *               paymentLink:
+     *                 type: string
+     *                 description: Link do pagamento
      *               status:
      *                 type: string
      *                 enum: [PENDING, RECEIVED, COMPLETED, CANCELED]
@@ -229,9 +235,12 @@ export class OrderController {
      *               email:
      *                 type: string
      *                 description: E-mail do cliente
-     *               idPayment:
+     *               paymentId:
      *                 type: string
      *                 description: ID do pagamento
+     *               paymentLink:
+     *                 type: string
+     *                 description: Link do pagamento
      *               status:
      *                 type: string
      *                 enum: [PENDING, RECEIVED, COMPLETED, CANCELED]
@@ -351,9 +360,12 @@ export class OrderController {
      *                 email:
      *                   type: string
      *                   description: E-mail do cliente
-     *                 idPayment:
-     *                   type: string
-     *                   description: ID do pagamento
+     *               paymentId:
+     *                 type: string
+     *                 description: ID do pagamento
+     *               paymentLink:
+     *                 type: string
+     *                 description: Link do pagamento
      *                 status:
      *                   type: string
      *                   enum: [PENDING, RECEIVED, COMPLETED, CANCELED]

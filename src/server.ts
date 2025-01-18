@@ -15,6 +15,7 @@ import { HealthCheckUseCase } from './useCases/healthCheck'
 import { MongoPaymentRepository } from './drivers/database/paymentModel'
 import { PaymentUseCase } from './useCases/payment'
 import { PaymentController } from './drivers/web/paymentController'
+import { MercadoPagoController } from './drivers/web/mercadoPagoController'
 
 class InitProject {
     public express: express.Application
@@ -62,14 +63,21 @@ class InitProject {
         const routesOrderController = new OrderController(orderUseCase)
         this.express.use('/order', routesOrderController.setupRoutes())
 
+        // Configuração do MercadoPagoController
+        const mercadoPagoController = new MercadoPagoController()
+
         // Configuração do Pagamento
         const paymentRepository = new MongoPaymentRepository(
             this.mongoConnection
         )
+
+        // Agora passando o `mercadoPagoController` para o `PaymentUseCase`
         const paymentUseCase = new PaymentUseCase(
             paymentRepository,
-            orderRepository
+            orderRepository,
+            mercadoPagoController
         )
+
         const paymentController = new PaymentController(paymentUseCase)
         this.express.use('/payment', paymentController.setupRoutes())
 

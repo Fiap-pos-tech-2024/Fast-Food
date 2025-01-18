@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb'
 import { MongoConnection } from '../../config/mongoConfig'
+import { PaymentRepository } from '../../domain/interface/paymentRepository'
 import { Payment } from '../../domain/entities/payment'
-import { PAYMENT_STATUS } from '../../constants/payment'
 
-export class MongoPaymentRepository {
+export class MongoPaymentRepository implements PaymentRepository {
     private collection = 'payment'
     private mongoConnection: MongoConnection
 
@@ -18,13 +18,9 @@ export class MongoPaymentRepository {
     async createPayment(payment: Payment): Promise<{ id: string }> {
         const db = await this.getDb()
         const payments = await db.collection(this.collection).insertOne({
-            _id: new ObjectId(),
-            order: payment.order,
-            paymentLink: payment.paymentLink,
-            status: payment.status,
-            total: payment.total,
+            _id: new ObjectId(payment.paymentId ?? ''),
+            ...payment,
         })
-
         return { id: payments.insertedId.toString() }
     }
 
@@ -45,19 +41,18 @@ export class MongoPaymentRepository {
         return null
     }
 
-    async checkPaymentStatus(
-        paymentId: string
-    ): Promise<{ status: string } | null> {
+    async updatePaymentStatus(
+        paymentId: string,
+        status: string
+    ): Promise<void> {
         const db = await this.getDb()
-        const payment = await db
-            .collection(this.collection)
-            .findOne({ _id: new ObjectId(paymentId) })
-
-        if (!payment) {
-            throw new Error('Payment not found')
-        }
-
-        // Fake payment success
-        return { status: PAYMENT_STATUS.PAID }
+        const dbCollection = db.collection(this.collection)
+        const query = { _id: new ObjectId(paymentId) }
+        await dbCollection.updateOne(query, {
+            $set: {
+                status,
+                'order.status': status,
+            },
+        })
     }
 }

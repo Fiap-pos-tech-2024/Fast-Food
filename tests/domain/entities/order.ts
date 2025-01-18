@@ -8,10 +8,11 @@ export class Order {
         public cpf: string | null,
         public name: string | null,
         public email: string | null,
-        public idPayment: string | null,
+        public paymentId: string | null,
+        public paymentLink: string | null,
         public status: string,
         public value: number,
-        public itens: Array<Product>
+        public items: Array<Product>
     ) {}
 
     static createMock(
@@ -20,10 +21,11 @@ export class Order {
         cpf = '000.000.000-00',
         name = 'John Doe',
         email = 'john@example.com',
-        idPayment = null,
+        paymentLink = null,
+        paymentId = null,
         status = ORDER_STATUS.RECEIVED,
         value = 10,
-        itens = [
+        items = [
             {
                 idProduct: 'Item 1',
                 amount: 2,
@@ -45,10 +47,11 @@ export class Order {
             cpf,
             name,
             email,
-            idPayment,
+            paymentId,
+            paymentLink,
             status,
             value,
-            itens
+            items
         )
     }
 }

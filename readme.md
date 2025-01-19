@@ -49,3 +49,25 @@ Para iniciar o projeto, você precisará ter o Docker e o Docker Compose instala
 ## Documentação da API
 
 A documentação das APIs está disponível via Swagger. Após iniciar o projeto, você pode acessá-la em http://localhost:3000/api-docs.
+
+## Comandos Kubernetes
+
+Para aplicar os manifestos no Kubernetes, execute os seguintes comandos:
+
+```bash
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secret.yaml
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/hpa.yaml
+```
+
+Para deletar os recursos no Kubernetes, execute os seguintes comandos:
+
+```bash
+kubectl delete -f k8s/deployment.yaml
+kubectl delete -f k8s/service.yaml
+kubectl delete -f k8s/hpa.yaml
+kubectl delete -f k8s/configmap.yaml
+kubectl delete -f k8s/secret.yaml
+```

@@ -13,7 +13,6 @@ describe('PaymentController', () => {
         mockPaymentUseCase = {
             getPayment: jest.fn(),
             createPayment: jest.fn(),
-            checkPaymentStatus: jest.fn(),
             paymentRepository: {},
         } as unknown as jest.Mocked<PaymentUseCase>
 
@@ -67,50 +66,9 @@ describe('PaymentController', () => {
             })
         })
     })
-
-    describe('checkPaymentStatus', () => {
-        it('should check payment status', async () => {
-            const mockedStatus = {
-                status: 'success',
-            }
-            req.params = { id: '1' }
-            mockPaymentUseCase.checkPaymentStatus.mockResolvedValue(
-                mockedStatus
-            )
-
-            await paymentController.checkPaymentStatus(
-                req as Request,
-                res as Response
-            )
-
-            expect(mockPaymentUseCase.checkPaymentStatus).toHaveBeenCalledWith(
-                '1'
-            )
-            expect(res.status).toHaveBeenCalledWith(200)
-            expect(res.json).toHaveBeenCalledWith(mockedStatus)
-        })
-
-        it('should return 500 on error', async () => {
-            req.params = { id: '1' }
-            mockPaymentUseCase.checkPaymentStatus.mockRejectedValue(
-                new Error('An unexpected error occurred')
-            )
-
-            await paymentController.checkPaymentStatus(
-                req as Request,
-                res as Response
-            )
-
-            expect(res.status).toHaveBeenCalledWith(500)
-            expect(res.json).toHaveBeenCalledWith({
-                error: 'Failed to check payment status',
-            })
-        })
-    })
-
     describe('getPayment', () => {
         it('should return a payment by id', async () => {
-            req.params = { id: '1' }
+            req.params = { paymentId: '1' }
             const payment = Payment.createMock()
             mockPaymentUseCase.getPayment.mockResolvedValue(payment)
 
@@ -122,7 +80,7 @@ describe('PaymentController', () => {
         })
 
         it('should return 404 if payment not found', async () => {
-            req.params = { id: '1' }
+            req.params = { paymentId: '1' }
             mockPaymentUseCase.getPayment.mockResolvedValue(null)
 
             await paymentController.getPayment(req as Request, res as Response)
@@ -132,9 +90,9 @@ describe('PaymentController', () => {
         })
 
         it('should return 500 on error', async () => {
-            req.params = { id: '1' }
+            req.params = { paymentId: '1' }
             mockPaymentUseCase.getPayment.mockRejectedValue(
-                new Error('An unexpected error occurred')
+                new Error('Failed to get payment')
             )
 
             await paymentController.getPayment(req as Request, res as Response)

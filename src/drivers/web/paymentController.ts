@@ -1,27 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Router, Request, Response } from 'express'
 import { PaymentUseCase } from '../../useCases/payment'
 
 export class PaymentController {
     private routes: Router
+
     constructor(private PaymentUseCase: PaymentUseCase) {
         this.routes = Router()
     }
 
     setupRoutes() {
         this.routes.post('/', this.createPayment.bind(this))
-        this.routes.get('/:id', this.getPayment.bind(this))
-        this.routes.get('/:id/check', this.checkPaymentStatus.bind(this))
+        this.routes.get('/:paymentId', this.getPayment.bind(this))
+        this.routes.post('/webhook', this.paymentWebhook.bind(this))
         return this.routes
     }
-
     /**
      * @swagger
      * /payment:
      *   post:
-     *     summary: Cria um link de pagamento
+     *     summary: Cria um novo pagamento
      *     tags: [Payment]
-     *     description: Cria um novo link de pagamento com base nos dados fornecidos.
+     *     description: Cria um pagamento contendo um link de pagamento do tipo QR CODE para o cliente com base nas informações do pedido.
      *     requestBody:
      *       required: true
      *       content:
@@ -34,48 +33,51 @@ export class PaymentController {
      *                 properties:
      *                   idOrder:
      *                     type: string
-     *                     example: "12345"
+     *                     example: "678adc35ed21b00d8e815de5"
      *                   idClient:
      *                     type: string
-     *                     example: "67890"
+     *                     example: "678aafe9825ee5d0791e4344"
      *                   cpf:
      *                     type: string
-     *                     example: "123.456.789-00"
+     *                     example: "01234567896"
      *                   name:
      *                     type: string
-     *                     example: "João Silva"
+     *                     example: "John Doe"
      *                   email:
      *                     type: string
-     *                     example: "joao.silva@example.com"
+     *                     example: "john@teste.com"
      *                   status:
      *                     type: string
      *                     example: "WAITING_PAYMENT"
      *                   value:
      *                     type: number
-     *                     example: 100.00
-     *                   itens:
+     *                     example: 10
+     *                   items:
      *                     type: array
      *                     items:
      *                       type: object
      *                       properties:
-     *                         id:
+     *                         idProduct:
      *                           type: string
-     *                           example: "123"
+     *                           example: "1"
      *                         name:
      *                           type: string
-     *                           example: "Produto Exemplo"
+     *                           example: "Coca-Cola"
+     *                         observation:
+     *                           type: string
+     *                           example: "Sem gelo"
+     *                         unitValue:
+     *                           type: number
+     *                           example: 10
      *                         price:
      *                           type: number
-     *                           example: 50.00
-     *                         quantity:
+     *                           example: 20
+     *                         amount:
      *                           type: number
      *                           example: 2
-     *               total:
-     *                 type: number
-     *                 example: 100.00
      *     responses:
-     *       '201':
-     *         description: Link de pagamento criado com sucesso.
+     *       201:
+     *         description: Link de pagamento criado com sucesso
      *         content:
      *           application/json:
      *             schema:
@@ -83,45 +85,40 @@ export class PaymentController {
      *               properties:
      *                 id:
      *                   type: string
-     *                   example: "12345"
-     *       '500':
-     *         description: Erro interno ao criar o link de pagamento.
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 error:
-     *                   type: string
-     *                   example: "Failed to create payment link"
+     *                   example: '678adc35ed21b00d8e815de5'
+     *       500:
+     *         description: Erro interno ao criar o pagamento
      */
-    async createPayment(req: Request, res: Response) {
+
+    public async createPayment(req: Request, res: Response): Promise<void> {
         try {
-            const result = await this.PaymentUseCase.createPayment(req.body)
+            const payment = req.body
+            const result = await this.PaymentUseCase.createPayment(payment)
             res.status(201).json(result)
         } catch (error) {
+            console.log('Failed to create payment link', error)
             res.status(500).json({ error: 'Failed to create payment link' })
         }
     }
 
     /**
      * @swagger
-     * /payment/{id}:
+     * /payment/{paymentId}:
      *   get:
-     *     summary: Obtém os detalhes de um pagamento
+     *     summary: Obtém detalhes de um pagamento
      *     tags: [Payment]
-     *     description: Recupera as informações de um pagamento com base no ID fornecido.
+     *     description: Retorna informações detalhadas sobre um pagamento específico, incluindo dados do pedido, status do pagamento e o link de pagamento.
      *     parameters:
-     *       - name: id
-     *         in: path
+     *       - in: path
+     *         name: paymentId
      *         required: true
-     *         description: O ID do pagamento que deve ser recuperado.
+     *         description: ID do pagamento para obter os detalhes
      *         schema:
      *           type: string
-     *           example: "123454567891011"
+     *           example: "678adc35ed21b00d8e815de5"
      *     responses:
-     *       '200':
-     *         description: Detalhes do pagamento encontrados com sucesso.
+     *       200:
+     *         description: Detalhes do pagamento obtidos com sucesso
      *         content:
      *           application/json:
      *             schema:
@@ -132,132 +129,112 @@ export class PaymentController {
      *                   properties:
      *                     idOrder:
      *                       type: string
-     *                       example: "12345"
+     *                       example: "678adc35ed21b00d8e815de5"
      *                     idClient:
      *                       type: string
-     *                       example: "67890"
+     *                       example: "678aafe9825ee5d0791e4344"
      *                     cpf:
      *                       type: string
-     *                       example: "123.456.789-00"
+     *                       example: "01234567896"
      *                     name:
      *                       type: string
-     *                       example: "João Silva"
+     *                       example: "John Doe"
      *                     email:
      *                       type: string
-     *                       example: "joao.silva@example.com"
-     *                     idPayment:
-     *                       type: string
-     *                       example: "12345678910"
+     *                       example: "john@teste.com"
      *                     status:
      *                       type: string
-     *                       example: "RECEIVED"
+     *                       example: "WAITING_PAYMENT"
      *                     value:
      *                       type: number
-     *                       example: 100.00
-     *                     itens:
+     *                       example: 10
+     *                     items:
      *                       type: array
      *                       items:
      *                         type: object
      *                         properties:
-     *                           id:
+     *                           idProduct:
      *                             type: string
-     *                             example: "123"
+     *                             example: "1"
      *                           name:
      *                             type: string
-     *                             example: "Produto Exemplo"
+     *                             example: "Coca-Cola"
+     *                           observation:
+     *                             type: string
+     *                             example: "Sem gelo"
+     *                           unitValue:
+     *                             type: number
+     *                             example: 10
      *                           price:
      *                             type: number
-     *                             example: 50.00
-     *                           quantity:
+     *                             example: 20
+     *                           amount:
      *                             type: number
      *                             example: 2
      *                 paymentId:
      *                   type: string
-     *                   example: "12345678910"
+     *                   example: "678adc35ed21b00d8e815de5"
      *                 paymentLink:
      *                   type: string
-     *                   example: "http://payment.link/12345"
+     *                   example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANQAAADUCAYAAADk3g0YAAAAAkl..."
      *                 status:
      *                   type: string
-     *                   example: "PAID"
+     *                   example: "paid"
      *                 total:
      *                   type: number
-     *                   example: 100.00
-     *       '404':
-     *         description: Pagamento não encontrado.
-     *       '500':
-     *         description: Erro inesperado ao recuperar o pagamento.
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 error:
-     *                   type: string
-     *                   example: "An unexpected error occurred"
+     *                   example: 10
+     *       404:
+     *         description: Pagamento não encontrado
+     *       500:
+     *         description: Erro interno ao obter detalhes do pagamento
      */
-    public async getPayment(req: Request, res: Response) {
+    public async getPayment(req: Request, res: Response): Promise<void> {
         try {
-            const paymentId = req.params.id
-            const payment = await this.PaymentUseCase.getPayment(paymentId)
-            if (payment) {
-                res.status(200).json(payment)
-                return
-            }
-            res.status(404).send('Payment not found')
+            const { paymentId } = req.params
+            const result = await this.PaymentUseCase.getPayment(paymentId)
+            if (!result) res.status(404).send('Payment not found')
+
+            res.status(200).json(result)
         } catch (error) {
+            console.log('Failed to get payment', error)
             res.status(500).json({ error: 'An unexpected error occurred' })
         }
     }
 
     /**
      * @swagger
-     * /payment/{id}/status:
-     *   get:
-     *     summary: Verifica o status de um pagamento
+     * /payment/webhook:
+     *   post:
+     *     summary: Recebe e processa informações de webhook de pagamento
      *     tags: [Payment]
-     *     description: Recupera o status de um pagamento com base no ID fornecido.
-     *     parameters:
-     *       - name: id
-     *         in: path
-     *         required: true
-     *         description: O ID do pagamento para verificar o status.
-     *         schema:
-     *           type: string
-     *           example: "1234567891011"
+     *     description: Rota para processar as notificações enviadas pelo sistema de pagamento. O corpo da requisição inclui url de consulta dos detalhes do pagamento e o tópico da notificação.
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               resource:
+     *                 type: string
+     *                 example: "https://api.mercadolibre.com/merchant_orders/27361530909"
+     *               topic:
+     *                 type: string
+     *                 example: "merchant_order"
      *     responses:
-     *       '200':
-     *         description: Status do pagamento recuperado com sucesso.
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 status:
-     *                   type: string
-     *                   example: "PAID"
-     *       '404':
-     *         description: Pagamento não encontrado.
-     *       '500':
-     *         description: Falha ao verificar o status do pagamento.
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 error:
-     *                   type: string
-     *                   example: "Failed to check payment status"
+     *       200:
+     *         description: Webhook processado com sucesso
+     *       400:
+     *         description: Erro ao processar o webhook
      */
-    async checkPaymentStatus(req: Request, res: Response) {
+    public async paymentWebhook(req: Request, res: Response): Promise<void> {
         try {
-            const paymentId = req.params.id
-
-            const paymentStatus =
-                await this.PaymentUseCase.checkPaymentStatus(paymentId)
-            res.status(200).json(paymentStatus)
+            const webhookData = req.body
+            await this.PaymentUseCase.handlePaymentWebhook(webhookData)
+            res.status(200).send('Webhook processed successfully')
         } catch (error) {
-            res.status(500).json({ error: 'Failed to check payment status' })
+            console.log('Failed to process webhook info', error)
+            res.status(400).json({ error: 'Failed to process webhook info' })
         }
     }
 }

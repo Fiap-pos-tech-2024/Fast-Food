@@ -24,7 +24,6 @@ export class MongoClientRepository implements ClientRepository {
             email: client.email,
             status: client.status,
         })
-        console.log(result, 'client')
         return result.insertedId.toString()
     }
 

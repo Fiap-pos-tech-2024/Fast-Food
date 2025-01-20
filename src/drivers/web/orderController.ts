@@ -200,6 +200,8 @@ export class OrderController {
             const status_error: { [key: string]: number } = {
                 'Order already exists': 409,
                 'Product does not exist': 400,
+                'Client does not exist': 400,
+                'Order must have at least one item': 500,
             }
 
             const status_code = status_error[errorData.message] || 500

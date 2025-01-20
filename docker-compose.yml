@@ -6,6 +6,7 @@ services:
         ports:
             - '3000:3000'
         environment:
+
             - MONGODB_URI=mongodb://mongo:27017/mong # Alterar para o banco de dados
             - MERCADO_PAGO_API=https://api.mercadopago.com
             - MERCADO_PAGO_CLIENT_SECRET='IyaI124z9fuUZUPAjslnGvdo0S4IVF3t'

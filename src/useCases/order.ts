@@ -71,7 +71,7 @@ export class OrderUseCase {
         order.items = itemsDetails
         order.status = ORDER_STATUS.AWAITING_PAYMENT
 
-        const result = this.orderRepository.createOrder(order)
+        const result = await this.orderRepository.createOrder(order)
         return result
     }
 

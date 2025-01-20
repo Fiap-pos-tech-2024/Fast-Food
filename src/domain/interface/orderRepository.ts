@@ -2,7 +2,7 @@ import { Order } from '../entities/order'
 
 export interface OrderRepository {
     getOrder(id: string): Promise<Order | null>
-    createOrder(order: Order): Promise<void>
+    createOrder(order: Order): Promise<string>
     updateOrder(id: string, order: Order): Promise<void>
     deleteOrder(id: string): Promise<void>
     updateOrderStatus(orderId: string, status: string): Promise<void>

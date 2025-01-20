@@ -13,12 +13,13 @@ export class ClientUseCase {
         return clients
     }
 
-    public async createClient(clientData: Client): Promise<void> {
+    public async createClient(clientData: Client): Promise<string> {
         const client = await this.clientRepository.findByEmail(clientData.email)
         if (client) {
             throw new Error('Client already exists')
         }
-        await this.clientRepository.save(clientData)
+        const result = await this.clientRepository.save(clientData)
+        return result
     }
 
     public async updateClient(

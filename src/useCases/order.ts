@@ -16,7 +16,7 @@ export class OrderUseCase {
         return this.orderRepository.getOrder(id)
     }
 
-    async createOrder(order: Order): Promise<void> {
+    async createOrder(order: Order): Promise<string> {
         if (order.items?.length === 0) {
             throw new Error('Order must have at least one item')
         }
@@ -71,7 +71,8 @@ export class OrderUseCase {
         order.items = itemsDetails
         order.status = ORDER_STATUS.AWAITING_PAYMENT
 
-        return this.orderRepository.createOrder(order)
+        const result = this.orderRepository.createOrder(order)
+        return result
     }
 
     async updateOrder(id: string, order: Order) {

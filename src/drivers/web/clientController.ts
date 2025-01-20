@@ -100,9 +100,16 @@ export class ClientController {
      *       201:
      *         description: Cliente criado com sucesso
      *         content:
-     *           text/plain:
+     *           application/json:
      *             schema:
-     *               type: string
+     *               type: object
+     *               properties:
+     *                  id:
+     *                     type: string
+     *                     description: ID do cliente
+     *                  message:
+     *                      type: string
+     *                      description: Mensagem de sucesso
      *       409:
      *         description: Cliente já existe
      *         content:
@@ -127,8 +134,11 @@ export class ClientController {
     public async createClient(req: Request, res: Response) {
         try {
             const clientData = req.body
-            await this.clientUseCase.createClient(clientData)
-            res.status(201).send('Client created successfully')
+            const clientId = await this.clientUseCase.createClient(clientData)
+            res.status(201).json({
+                id: clientId,
+                message: 'Client created successfully',
+            })
         } catch (error: unknown) {
             const errorData = error as errorType
             const status_error: { [key: string]: number } = {

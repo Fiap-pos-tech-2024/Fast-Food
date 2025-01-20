@@ -15,9 +15,9 @@ export class MongoOrderRepository implements OrderRepository {
         return this.mongoConnection.getDatabase()
     }
 
-    async createOrder(order: Order): Promise<void> {
+    async createOrder(order: Order): Promise<string> {
         const db = await this.getDb()
-        await db.collection(this.collection).insertOne({
+        const result = await db.collection(this.collection).insertOne({
             _id: new ObjectId(),
             idClient: order.idClient,
             cpf: order.cpf,
@@ -27,6 +27,7 @@ export class MongoOrderRepository implements OrderRepository {
             itens: order.items,
             value: order.value,
         })
+        return result.insertedId.toString()
     }
 
     async getOrder(orderId: string): Promise<Order | null> {

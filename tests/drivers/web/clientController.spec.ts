@@ -59,7 +59,7 @@ describe('ClientController', () => {
     describe('createClient', () => {
         it('should create a new client', async () => {
             req.body = Client.createMock()
-            mockClientUseCase.createClient.mockResolvedValue()
+            mockClientUseCase.createClient.mockResolvedValue('12345')
 
             await clientController.createClient(req as Request, res as Response)
 
@@ -67,7 +67,10 @@ describe('ClientController', () => {
                 req.body
             )
             expect(res.status).toHaveBeenCalledWith(201)
-            expect(res.send).toHaveBeenCalledWith('Client created successfully')
+            expect(res.json).toHaveBeenCalledWith({
+                id: '12345',
+                message: 'Client created successfully',
+            })
         })
 
         it('should return 409 if client already exists', async () => {

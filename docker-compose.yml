@@ -6,13 +6,12 @@ services:
         ports:
             - '3000:3000'
         environment:
-
-            - MONGODB_URI=mongodb://mongo:27017/mong # Alterar para o banco de dados
-            - MERCADO_PAGO_API=https://api.mercadopago.com
-            - MERCADO_PAGO_CLIENT_SECRET='IyaI124z9fuUZUPAjslnGvdo0S4IVF3t'
-            - MERCADO_PAGO_CLIENT_ID='1824214370596611'
-            - MERCADO_PAGO_QR_CODE_API=https://api.mercadopago.com/instore/orders/qr/seller/collectors
-            - MERCADO_PAGO_WEBHOOK=https://c318-2804-7f4-5218-d989-19f0-8213-bd-69d8.ngrok-free.app
+            MONGODB_URI: ${MONGODB_URI}
+            MERCADO_PAGO_API: ${MERCADO_PAGO_API}
+            MERCADO_PAGO_CLIENT_SECRET: ${MERCADO_PAGO_CLIENT_SECRET}
+            MERCADO_PAGO_CLIENT_ID: ${MERCADO_PAGO_CLIENT_ID}
+            MERCADO_PAGO_QR_CODE_API: ${MERCADO_PAGO_QR_CODE_API}
+            MERCADO_PAGO_WEBHOOK: ${MERCADO_PAGO_WEBHOOK}
         depends_on:
             - mongo
         volumes:

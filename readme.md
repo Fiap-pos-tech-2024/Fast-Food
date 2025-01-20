@@ -53,7 +53,7 @@ npm install -g ngrok
 ngrok http 3000
 ```
 
-Esse comando indica a nossa porta da aplicação para redirecionar
+Esse comando indica a nossa porta da aplicação para redirecionar. Copie o link gerado e cole na env `MERCADO_PAGO_WEBHOOK`.
 
 Obs: Caso seja a primeira vez, faça login conforme sugerido no terminal.
 
@@ -214,7 +214,7 @@ Após realizado pagamento com sucesso no aplicativo do Mercado Pago, consulte o 
 
 ```bash
 GET
-curl --location 'http://localhost:3000/payment/:idPayment/status' \
+curl --location 'http://localhost:3000/payment/:idPayment' \
 --data ''
 ```
 

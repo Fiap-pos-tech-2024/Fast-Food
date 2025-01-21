@@ -3,6 +3,7 @@ import { OrderRepository } from '../domain/interface/orderRepository'
 import { Payment } from '../domain/entities/payment'
 import { MercadoPagoController } from '../drivers/web/mercadoPagoController'
 import { PAYMENT_STATUS } from '../constants/payment'
+import { ORDER_STATUS } from '../constants/order'
 
 export class PaymentUseCase {
     private paymentRepository: PaymentRepository
@@ -86,7 +87,7 @@ export class PaymentUseCase {
         }
 
         const paymentId = mercadoPagoData.id
-        const paymentStatus = mercadoPagoData.status
+        const paymentStatus = mercadoPagoData.status.toUpperCase()
 
         const payment = await this.paymentRepository.getPayment(paymentId)
         if (!payment) {
@@ -98,6 +99,11 @@ export class PaymentUseCase {
             paymentStatus
         )
 
-        await this.orderRepository.updateOrderStatus(paymentId, paymentStatus)
+        if (paymentStatus === 'PAID') {
+            await this.orderRepository.updateOrderStatus(
+                paymentId,
+                ORDER_STATUS.RECEIVED
+            )
+        }
     }
 }

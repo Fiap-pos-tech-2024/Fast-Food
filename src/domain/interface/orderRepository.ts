@@ -8,4 +8,5 @@ export interface OrderRepository {
     updateOrderStatus(orderId: string, status: string): Promise<void>
     updatePayment(id: string, paymentId: string): Promise<void>
     listOrders(): Promise<Order[]>
+    getActiveOrders(): Promise<Order[]>
 }

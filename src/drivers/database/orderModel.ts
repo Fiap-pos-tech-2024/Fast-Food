@@ -1,4 +1,5 @@
 import { MongoConnection } from '../../config/mongoConfig'
+import { ORDER_STATUS_LIST } from '../../constants/order'
 import { Order } from '../../domain/entities/order'
 import { OrderRepository } from '../../domain/interface/orderRepository'
 import { ObjectId } from 'mongodb'
@@ -87,6 +88,34 @@ export class MongoOrderRepository implements OrderRepository {
     async listOrders(): Promise<Order[]> {
         const db = await this.getDb()
         const orders = await db.collection(this.collection).find().toArray()
+        return orders.map((order) => {
+            return new Order({
+                idOrder: order._id.toString(),
+                idClient: order.idClient,
+                cpf: order.cpf,
+                name: order.name,
+                email: order.email,
+                status: order.status,
+                items: order.items,
+                value: order.value,
+                paymentLink: order.paymentLink,
+                paymentId: order.paymentId,
+            })
+        })
+    }
+
+    async getActiveOrders(): Promise<Order[]> {
+        const db = await this.getDb()
+
+        const orders = await db
+            .collection(this.collection)
+            .find({
+                status: { $in: ORDER_STATUS_LIST },
+                idPayment: { $ne: null },
+            })
+            .sort({ createdAt: 1 })
+            .toArray()
+
         return orders.map((order) => {
             return new Order({
                 idOrder: order._id.toString(),

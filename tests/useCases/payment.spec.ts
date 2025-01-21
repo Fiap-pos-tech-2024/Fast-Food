@@ -5,6 +5,7 @@ import { Payment } from '../../src/domain/entities/payment'
 import { PAYMENT_STATUS } from '../../src/constants/payment'
 import { Order } from '../domain/entities/order'
 import { PaymentUseCase } from '../../src/useCases/payment'
+import { ORDER_STATUS } from '../../src/constants/order'
 
 const existingOrderMock = {
     idOrder: '123',
@@ -34,6 +35,7 @@ describe('PaymentUseCase', () => {
             deleteOrder: jest.fn(),
             updatePayment: jest.fn(),
             listOrders: jest.fn(),
+            getActiveOrders: jest.fn(),
         }
         mercadoPagoController = {
             getUserToken: jest.fn(),
@@ -192,7 +194,7 @@ describe('PaymentUseCase', () => {
             )
             expect(orderRepository.updateOrderStatus).toHaveBeenCalledWith(
                 paymentId,
-                PAYMENT_STATUS.PAID
+                ORDER_STATUS.RECEIVED
             )
         })
 

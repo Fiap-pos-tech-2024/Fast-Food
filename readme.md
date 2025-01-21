@@ -1,5 +1,7 @@
 # Tech Challenge - Fast Food System
 
+[Apresentação FIAP - Fase 2](https://youtu.be/vD4L3E_Gviw)
+
 ## Descrição do Projeto
 
 O **Tech Challenge** é um projeto desenvolvido como parte da entrega da Pós-Graduação na FIAP. O objetivo é criar um sistema de autoatendimento para uma lanchonete em expansão, que visa melhorar a experiência do cliente e otimizar o gerenciamento de pedidos. O sistema permitirá que os clientes façam pedidos de forma rápida e eficiente, enquanto o estabelecimento poderá gerenciar clientes, produtos e pedidos com mais eficácia.

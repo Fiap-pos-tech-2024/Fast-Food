@@ -12,22 +12,22 @@ Com o crescimento da lanchonete, a falta de um sistema de controle de pedidos po
 
 ## Funcionalidades
 
--   **Pedido**: Interface para os clientes montarem seus pedidos de forma intuitiva.
--   **Pagamento**: Integração com o Mercado Pago via QRCode (Fake checkout).
--   ⚠️ **Acompanhamento**: Atualizações em tempo real sobre o status do pedido.
--   ⚠️ **Gerenciamento Administrativo**: Painel para gerenciar clientes e produtos, acompanhar pedidos e implementar campanhas promocionais.
+- **Pedido**: Interface para os clientes montarem seus pedidos de forma intuitiva.
+- **Pagamento**: Integração com o Mercado Pago via QRCode (Fake checkout).
+- ⚠️ **Acompanhamento**: Atualizações em tempo real sobre o status do pedido.
+- ⚠️ **Gerenciamento Administrativo**: Painel para gerenciar clientes e produtos, acompanhar pedidos e implementar campanhas promocionais.
 
 ## Estrutura do Projeto
 
--   **Backend**: Monolito utilizando arquitetura hexagonal.
--   **APIs Implementadas**:
-    -   Cadastro do Cliente
-    -   Identificação do Cliente via CPF
-    -   Criação, edição e remoção de produtos
-    -   Busca de produtos por categoria
-    -   Fake checkout integrado ao Mercado Pago para processamento de pedidos
-    -   Listagem de pedidos
--   **Banco de Dados**: MongoDB para armazenamento das informações dos cliente e pedidos.
+- **Backend**: Monolito utilizando arquitetura hexagonal.
+- **APIs Implementadas**:
+    - Cadastro do Cliente
+    - Identificação do Cliente via CPF
+    - Criação, edição e remoção de produtos
+    - Busca de produtos por categoria
+    - Fake checkout integrado ao Mercado Pago para processamento de pedidos
+    - Listagem de pedidos
+- **Banco de Dados**: MongoDB para armazenamento das informações dos cliente e pedidos.
 
 ## Como Rodar o Projeto Localmente
 

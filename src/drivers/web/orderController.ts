@@ -478,7 +478,7 @@ export class OrderController {
 
     /**
      * @swagger
-     * /order/active-orders:
+     *   /order/status/active:
      *   get:
      *     summary: Lista pedidos ativos e pagos
      *     description: Retorna apenas pedidos com status ativo (RECEIVED, IN_PREPARATION, READY) que já foram pagos.

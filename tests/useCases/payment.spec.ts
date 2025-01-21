@@ -34,6 +34,7 @@ describe('PaymentUseCase', () => {
             deleteOrder: jest.fn(),
             updatePayment: jest.fn(),
             listOrders: jest.fn(),
+            getActiveOrders: jest.fn(),
         }
         mercadoPagoController = {
             getUserToken: jest.fn(),

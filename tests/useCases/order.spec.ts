@@ -21,6 +21,7 @@ describe('orderUseCase', () => {
             updateOrderStatus: jest.fn(),
             updatePayment: jest.fn(),
             listOrders: jest.fn(),
+            getActiveOrders: jest.fn(),
         }
 
         clientRepository = {
@@ -322,7 +323,7 @@ describe('orderUseCase', () => {
                     email: 'john@example.com',
                     status: 'RECEIVED',
                     value: 10,
-                    itens: [
+                    items: [
                         {
                             idProduct: 'Item 1',
                             name: 'Produto 1',
@@ -349,6 +350,8 @@ describe('orderUseCase', () => {
                         },
                     ],
                     createdAt: new Date('2024-01-01T10:00:00Z'),
+                    paymentLink: 'http://example.com',
+                    paymentId: 'pay_123',
                 } as Order,
                 {
                     idOrder: '2',
@@ -359,7 +362,9 @@ describe('orderUseCase', () => {
                     email: 'jane@example.com',
                     status: 'IN_PREPARATION',
                     value: 20,
-                    itens: [
+                    paymentLink: 'http://example.com',
+                    paymentId: 'pay_123',
+                    items: [
                         {
                             idProduct: 'Item 1',
                             name: 'Produto 1',

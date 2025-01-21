@@ -20,6 +20,7 @@ export class OrderController {
         this.routes.get('/', this.listOrders.bind(this))
         this.routes.post('/', this.createOrder.bind(this))
         this.routes.patch('/:id/status', this.updateOrderStatus.bind(this))
+        this.routes.get('/active-orders', this.listActiveOrders.bind(this))
         return this.routes
     }
 
@@ -54,9 +55,12 @@ export class OrderController {
      *                   email:
      *                     type: string
      *                     description: E-mail do cliente
-     *                   idPayment:
+     *                   paymentId:
      *                     type: string
      *                     description: ID do pagamento
+     *                   paymentLink:
+     *                     type: string
+     *                     description: Link do pagamento
      *                   status:
      *                     type: string
      *                     enum: [PENDING, RECEIVED, COMPLETED, CANCELED]
@@ -117,9 +121,12 @@ export class OrderController {
      *               email:
      *                 type: string
      *                 description: E-mail do cliente
-     *               idPayment:
+     *               paymentId:
      *                 type: string
      *                 description: ID do pagamento
+     *               paymentLink:
+     *                 type: string
+     *                 description: Link do pagamento
      *               status:
      *                 type: string
      *                 enum: [PENDING, RECEIVED, COMPLETED, CANCELED]
@@ -136,9 +143,16 @@ export class OrderController {
      *       201:
      *         description: Pedido criado com sucesso
      *         content:
-     *           text/plain:
+     *           application/json:
      *             schema:
-     *               type: string
+     *               type: object
+     *               properties:
+     *                  id:
+     *                     type: string
+     *                     description: ID do pedido
+     *                  message:
+     *                      type: string
+     *                      description: Mensagem de sucesso
      *       400:
      *         description: Pedido não criado
      *         content:
@@ -177,13 +191,18 @@ export class OrderController {
                 res.status(404).json({ error: 'Order not created' })
             }
 
-            await this.OrderUseCase.createOrder(order)
-            res.status(201).send('Order created successfully')
+            const orderId = await this.OrderUseCase.createOrder(order)
+            res.status(201).json({
+                id: orderId,
+                message: 'Order created successfully',
+            })
         } catch (error) {
             const errorData = error as errorType
             const status_error: { [key: string]: number } = {
                 'Order already exists': 409,
                 'Product does not exist': 400,
+                'Client does not exist': 400,
+                'Order must have at least one item': 500,
             }
 
             const status_code = status_error[errorData.message] || 500
@@ -229,9 +248,12 @@ export class OrderController {
      *               email:
      *                 type: string
      *                 description: E-mail do cliente
-     *               idPayment:
+     *               paymentId:
      *                 type: string
      *                 description: ID do pagamento
+     *               paymentLink:
+     *                 type: string
+     *                 description: Link do pagamento
      *               status:
      *                 type: string
      *                 enum: [PENDING, RECEIVED, COMPLETED, CANCELED]
@@ -351,9 +373,12 @@ export class OrderController {
      *                 email:
      *                   type: string
      *                   description: E-mail do cliente
-     *                 idPayment:
-     *                   type: string
-     *                   description: ID do pagamento
+     *               paymentId:
+     *                 type: string
+     *                 description: ID do pagamento
+     *               paymentLink:
+     *                 type: string
+     *                 description: Link do pagamento
      *                 status:
      *                   type: string
      *                   enum: [PENDING, RECEIVED, COMPLETED, CANCELED]

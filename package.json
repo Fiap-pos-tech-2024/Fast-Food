@@ -4,6 +4,7 @@
     "main": "index.js",
     "scripts": {
         "start": "nodemon -L --exec ts-node src/server.ts",
+        "build": "docker-compose up --build",
         "test": "jest",
         "lint": "eslint . --ext .ts",
         "lint-fix": "eslint . --ext .ts --fix",
@@ -19,6 +20,7 @@
         "@eslint/js": "^9.10.0",
         "@types/eslint__js": "^8.42.3",
         "@types/jest": "^29.5.14",
+        "@types/qrcode": "^1.5.5",
         "@types/swagger-jsdoc": "^6.0.4",
         "@types/swagger-ui-express": "^4.1.6",
         "@typescript-eslint/eslint-plugin": "^8.6.0",
@@ -38,6 +40,7 @@
         "express": "^4.21.0",
         "mongodb": "^6.9.0",
         "nodemon": "^3.1.6",
+        "qrcode": "^1.5.4",
         "swagger-jsdoc": "^6.2.8",
         "swagger-ui-express": "^5.0.1",
         "ts-node": "^10.9.2"

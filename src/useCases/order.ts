@@ -16,11 +16,11 @@ export class OrderUseCase {
         return this.orderRepository.getOrder(id)
     }
     async getActiveOrders(): Promise<Order[]> {
-        return this.orderRepository.listOrders()
+        return this.orderRepository.getActiveOrders()
     }
 
-    async createOrder(order: Order): Promise<void> {
-        if (order.itens?.length === 0) {
+    async createOrder(order: Order): Promise<string> {
+        if (order.items?.length === 0) {
             throw new Error('Order must have at least one item')
         }
 
@@ -43,7 +43,7 @@ export class OrderUseCase {
         const itemsDetails: Product[] = []
         order.value = 0
 
-        for (const item of order.itens) {
+        for (const item of order.items) {
             const existingProduct = await this.productRepository.findById(
                 item.idProduct
             )
@@ -71,10 +71,11 @@ export class OrderUseCase {
             order.value += productDetail.calculateTotalValue()
         }
 
-        order.itens = itemsDetails
+        order.items = itemsDetails
         order.status = ORDER_STATUS.AWAITING_PAYMENT
 
-        return this.orderRepository.createOrder(order)
+        const result = await this.orderRepository.createOrder(order)
+        return result
     }
 
     async updateOrder(id: string, order: Order) {

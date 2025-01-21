@@ -6,7 +6,12 @@ services:
         ports:
             - '3000:3000'
         environment:
-            - MONGODB_URI=mongodb://mongo:27017/seu_banco_de_dados # Alterar para o banco de dados
+            MONGODB_URI: ${MONGODB_URI}
+            MERCADO_PAGO_API: ${MERCADO_PAGO_API}
+            MERCADO_PAGO_CLIENT_SECRET: ${MERCADO_PAGO_CLIENT_SECRET}
+            MERCADO_PAGO_CLIENT_ID: ${MERCADO_PAGO_CLIENT_ID}
+            MERCADO_PAGO_QR_CODE_API: ${MERCADO_PAGO_QR_CODE_API}
+            MERCADO_PAGO_WEBHOOK: ${MERCADO_PAGO_WEBHOOK}
         depends_on:
             - mongo
         volumes:

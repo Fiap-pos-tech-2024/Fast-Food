@@ -15,15 +15,16 @@ export class MongoClientRepository implements ClientRepository {
         return this.mongoConnection.getDatabase()
     }
 
-    async save(client: Client): Promise<void> {
+    async save(client: Client): Promise<string> {
         const db = await this.getDb()
-        await db.collection(this.collection).insertOne({
+        const result = await db.collection(this.collection).insertOne({
             _id: new ObjectId(),
             cpf: client.cpf,
             name: client.name,
             email: client.email,
             status: client.status,
         })
+        return result.insertedId.toString()
     }
 
     async list(): Promise<Client[]> {

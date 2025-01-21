@@ -16,18 +16,19 @@ export class MongoOrderRepository implements OrderRepository {
         return this.mongoConnection.getDatabase()
     }
 
-    async createOrder(order: Order): Promise<void> {
+    async createOrder(order: Order): Promise<string> {
         const db = await this.getDb()
-        await db.collection(this.collection).insertOne({
+        const result = await db.collection(this.collection).insertOne({
             _id: new ObjectId(),
             idClient: order.idClient,
             cpf: order.cpf,
             name: order.name,
             email: order.email,
             status: order.status,
-            itens: order.itens,
+            itens: order.items,
             value: order.value,
         })
+        return result.insertedId.toString()
     }
 
     async getOrder(orderId: string): Promise<Order | null> {
@@ -43,9 +44,10 @@ export class MongoOrderRepository implements OrderRepository {
                 name: order.name,
                 email: order.email,
                 status: order.status,
-                itens: order.itens,
+                items: order.items,
                 value: order.value,
-                idPayment: order.idPayment,
+                paymentLink: order.paymentLink,
+                paymentId: order.paymentId,
             })
         }
         return null
@@ -94,9 +96,10 @@ export class MongoOrderRepository implements OrderRepository {
                 name: order.name,
                 email: order.email,
                 status: order.status,
-                itens: order.itens,
+                items: order.items,
                 value: order.value,
-                idPayment: order.idPayment,
+                paymentLink: order.paymentLink,
+                paymentId: order.paymentId,
             })
         })
     }
@@ -121,9 +124,10 @@ export class MongoOrderRepository implements OrderRepository {
                 name: order.name,
                 email: order.email,
                 status: order.status,
-                itens: order.itens,
+                items: order.items,
                 value: order.value,
-                idPayment: order.idPayment,
+                paymentLink: order.paymentLink,
+                paymentId: order.paymentId,
             })
         })
     }

@@ -63,13 +63,16 @@ describe('OrderController', () => {
     describe('createOrder', () => {
         it('should create a new order', async () => {
             req.body = Order.createMock()
-            mockOrderUseCase.createOrder.mockResolvedValue()
+            mockOrderUseCase.createOrder.mockResolvedValue('12345')
 
             await orderController.createOrder(req as Request, res as Response)
 
             expect(mockOrderUseCase.createOrder).toHaveBeenCalledWith(req.body)
             expect(res.status).toHaveBeenCalledWith(201)
-            expect(res.send).toHaveBeenCalledWith('Order created successfully')
+            expect(res.json).toHaveBeenCalledWith({
+                id: '12345',
+                message: 'Order created successfully',
+            })
         })
 
         it('should return 409 if order already exists', async () => {

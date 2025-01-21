@@ -14,13 +14,13 @@ export class OrderController {
     }
 
     public setupRoutes() {
+        this.routes.get('/status/active', this.listActiveOrders.bind(this))
+        this.routes.get('/:id', this.getOrder.bind(this))
         this.routes.put('/:id', this.updateOrder.bind(this))
         this.routes.delete('/:id', this.deleteOrder.bind(this))
-        this.routes.get('/:id', this.getOrder.bind(this))
         this.routes.get('/', this.listOrders.bind(this))
         this.routes.post('/', this.createOrder.bind(this))
         this.routes.patch('/:id/status', this.updateOrderStatus.bind(this))
-        this.routes.get('/active-orders', this.listActiveOrders.bind(this))
         return this.routes
     }
 

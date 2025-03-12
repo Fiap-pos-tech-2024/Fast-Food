@@ -3,7 +3,7 @@ import { MongoConnection } from './config/mongoConfig'
 import swaggerRouter from './config/swaggerConfig'
 import { ClientApiController } from './drivers/web/clientApiController'
 import { HealthCheckApiController } from './drivers/web/healthCheckApiController'
-import { OrderController } from './drivers/web/orderController'
+import { OrderApiController } from './drivers/web/orderApiController'
 import { ProductController } from './drivers/web/productController'
 import { PaymentController } from './drivers/web/paymentController'
 import { MercadoPagoController } from './drivers/web/mercadoPagoController'
@@ -60,8 +60,8 @@ class InitProject {
             clientRepository,
             productRepository
         )
-        const routesOrderController = new OrderController(orderUseCase)
-        this.express.use('/order', routesOrderController.setupRoutes())
+        const orderHandler = new OrderApiController(orderUseCase)
+        this.express.use('/order', orderHandler.setupRoutes())
 
         // Configuração do MercadoPagoController
         const mercadoPagoController = new MercadoPagoController()

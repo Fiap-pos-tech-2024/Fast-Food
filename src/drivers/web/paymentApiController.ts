@@ -1,7 +1,8 @@
 import { Router, Request, Response } from 'express'
 import { PaymentUseCase } from '../../useCases/payment'
+import { ERROR_STATUS_BY_MESSAGE } from '../../constants/payment'
 
-export class PaymentController {
+export class PaymentApiController {
     private routes: Router
 
     constructor(private PaymentUseCase: PaymentUseCase) {
@@ -192,12 +193,16 @@ export class PaymentController {
         try {
             const { paymentId } = req.params
             const result = await this.PaymentUseCase.getPayment(paymentId)
-            if (!result) res.status(404).send('Payment not found')
-
             res.status(200).json(result)
-        } catch (error) {
-            console.log('Failed to get payment', error)
-            res.status(500).json({ error: 'An unexpected error occurred' })
+        } catch (error: unknown) {
+            const errorData = error as {
+                message: string
+            }
+            const statusCode = ERROR_STATUS_BY_MESSAGE[errorData.message] || 500
+            const errorMessage = ERROR_STATUS_BY_MESSAGE[errorData.message]
+                ? errorData.message
+                : 'An unexpected error occurred'
+            res.status(statusCode).json({ error: errorMessage })
         }
     }
 

@@ -5,7 +5,7 @@ import { ClientApiController } from './drivers/web/clientApiController'
 import { HealthCheckApiController } from './drivers/web/healthCheckApiController'
 import { OrderApiController } from './drivers/web/orderApiController'
 import { ProductController } from './drivers/web/productController'
-import { PaymentController } from './drivers/web/paymentController'
+import { PaymentApiController } from './drivers/web/paymentApiController'
 import { MercadoPagoController } from './drivers/web/mercadoPagoController'
 import { MongoClientRepository } from './drivers/database/clientModel'
 import { MongoOrderRepository } from './drivers/database/orderModel'
@@ -75,8 +75,8 @@ class InitProject {
             orderRepository,
             mercadoPagoController
         )
-        const paymentController = new PaymentController(paymentUseCase)
-        this.express.use('/payment', paymentController.setupRoutes())
+        const paymentHandler = new PaymentApiController(paymentUseCase)
+        this.express.use('/payment', paymentHandler.setupRoutes())
 
         // Configuração do Health Check e Swagger
         const healthCheckUseCase = new HealthCheckUseCase()

@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
-import { OrderController } from '../../../src/drivers/web/orderController'
+import { OrderApiController } from '../../../src/drivers/web/orderApiController'
 import { OrderUseCase } from '../../../src/useCases/order'
 import { Order } from '../../domain/entities/order'
 import { ORDER_STATUS } from '../../../src/constants/order'
 
-describe('OrderController', () => {
-    let orderController: OrderController
+describe('OrderApiController', () => {
+    let orderController: OrderApiController
     let mockOrderUseCase: jest.Mocked<OrderUseCase>
     let req: Partial<Request>
     let res: Partial<Response>
@@ -21,7 +21,7 @@ describe('OrderController', () => {
             orderRepository: {},
         } as unknown as jest.Mocked<OrderUseCase>
 
-        orderController = new OrderController(mockOrderUseCase)
+        orderController = new OrderApiController(mockOrderUseCase)
 
         req = {
             params: {},
@@ -75,10 +75,25 @@ describe('OrderController', () => {
             })
         })
 
+        it('should return 400 if order data is empty', async () => {
+            req.body = null
+            mockOrderUseCase.createOrder.mockRejectedValue(
+                new Error('Invalid order data')
+            )
+
+            await orderController.createOrder(req as Request, res as Response)
+
+            expect(res.status).toHaveBeenCalledWith(400)
+            expect(res.json).toHaveBeenCalledWith({
+                error: 'Invalid order data',
+            })
+        })
+
         it('should return 409 if order already exists', async () => {
             req.body = Order.createMock()
-            const error = new Error('Order already exists')
-            mockOrderUseCase.createOrder.mockRejectedValue(error)
+            mockOrderUseCase.createOrder.mockRejectedValue(
+                new Error('Order already exists')
+            )
 
             await orderController.createOrder(req as Request, res as Response)
 
@@ -181,12 +196,16 @@ describe('OrderController', () => {
 
         it('should return 404 if order not found', async () => {
             req.params = { id: '1' }
-            mockOrderUseCase.getOrder.mockResolvedValue(null)
+            mockOrderUseCase.getOrder.mockRejectedValue(
+                new Error('Order not found')
+            )
 
             await orderController.getOrder(req as Request, res as Response)
 
             expect(res.status).toHaveBeenCalledWith(404)
-            expect(res.send).toHaveBeenCalledWith('Order not found')
+            expect(res.json).toHaveBeenCalledWith({
+                error: 'Order not found',
+            })
         })
 
         it('should return 500 on error', async () => {
@@ -228,7 +247,9 @@ describe('OrderController', () => {
         it('should return 400 for invalid status', async () => {
             req.params = { id: '1' }
             req.body = { status: 'INVALID' }
-            mockOrderUseCase.updateOrderStatus.mockResolvedValue(undefined)
+            mockOrderUseCase.updateOrderStatus.mockRejectedValue(
+                new Error('Invalid status provided')
+            )
 
             await orderController.updateOrderStatus(
                 req as Request,

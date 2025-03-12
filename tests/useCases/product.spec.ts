@@ -162,14 +162,13 @@ describe('ProductUseCase', () => {
             expect(productRepository.findById).toHaveBeenCalledWith(productId)
         })
 
-        it('should return null if product does not exist', async () => {
+        it('should return error if product does not exist', async () => {
             const productId = '1'
             productRepository.findById.mockResolvedValue(null)
 
-            const result = await useCase.getProduct(productId)
-
-            expect(result).toBeNull()
-            expect(productRepository.findById).toHaveBeenCalledWith(productId)
+            await expect(useCase.getProduct(productId)).rejects.toThrow(
+                'Product not found'
+            )
         })
     })
 })

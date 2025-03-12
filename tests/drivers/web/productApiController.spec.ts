@@ -1,10 +1,10 @@
-import { ProductController } from '../../../src/drivers/web/productController'
+import { ProductApiController } from '../../../src/drivers/web/productApiController'
 import { ProductUseCase } from '../../../src/useCases/product'
 import { Product } from '../../domain/entities/product'
 import { Request, Response } from 'express'
 
-describe('ProductController', () => {
-    let productController: ProductController
+describe('ProductApiController', () => {
+    let productController: ProductApiController
     let mockProductUseCase: jest.Mocked<ProductUseCase>
     let req: Partial<Request>
     let res: Partial<Response>
@@ -19,7 +19,7 @@ describe('ProductController', () => {
             getProduct: jest.fn(),
         } as unknown as jest.Mocked<ProductUseCase>
 
-        productController = new ProductController(mockProductUseCase)
+        productController = new ProductApiController(mockProductUseCase)
 
         req = {
             params: {},
@@ -239,12 +239,16 @@ describe('ProductController', () => {
 
         it('should return 404 if product not found', async () => {
             req.params = { id: '1' }
-            mockProductUseCase.getProduct.mockResolvedValue(null)
+            mockProductUseCase.getProduct.mockRejectedValue(
+                new Error('Product not found')
+            )
 
             await productController.getProduct(req as Request, res as Response)
 
             expect(res.status).toHaveBeenCalledWith(404)
-            expect(res.send).toHaveBeenCalledWith('Product not found')
+            expect(res.json).toHaveBeenCalledWith({
+                error: 'Product not found',
+            })
         })
 
         it('should return 500 on error', async () => {
@@ -256,7 +260,9 @@ describe('ProductController', () => {
             await productController.getProduct(req as Request, res as Response)
 
             expect(res.status).toHaveBeenCalledWith(500)
-            expect(res.send).toHaveBeenCalledWith('Error fetching product')
+            expect(res.json).toHaveBeenCalledWith({
+                error: 'Error fetching product',
+            })
         })
     })
 })

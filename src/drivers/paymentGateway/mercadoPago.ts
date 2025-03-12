@@ -1,8 +1,9 @@
 import QRCode from 'qrcode'
 import { Order } from '../../domain/entities/order'
 import { Product } from '../../domain/entities/product'
+import { PaymentGateway } from '../../domain/interface/paymentGateway'
 
-export class MercadoPagoController {
+export class MercadoPagoGateway implements PaymentGateway {
     async getUserToken(): Promise<{ token: string; userId: number } | null> {
         const url = `${process.env.MERCADO_PAGO_API}/oauth/token`
         const data = {
@@ -82,7 +83,7 @@ export class MercadoPagoController {
         return new Promise((resolve, reject) => {
             QRCode.toDataURL(qrData, (err: unknown, url: string) => {
                 if (err) {
-                    reject('Failed to generate QR Code Image')
+                    reject(new Error('Failed to generate QR Code Image'))
                 } else {
                     resolve(url)
                 }
@@ -113,8 +114,18 @@ export class MercadoPagoController {
                 status: result.order_status,
             }
         } catch (error) {
-            console.error('Failed to generate QR Code Link:', error)
-            throw new Error('Failed to generate QR code link')
+            console.error('Failed to get payment status:', error)
+            throw new Error('Failed to get payment status')
         }
+    }
+
+    async createPaymentLink(order: Order): Promise<string> {
+        const accessData = await this.getUserToken()
+        if (!accessData?.token || !accessData?.userId) {
+            throw new Error('Failed to fetch MercadoPago token')
+        }
+
+        const qrCodeLink = await this.generateQRCodeLink(accessData, order)
+        return await this.convertQRCodeToImage(qrCodeLink.qr_data)
     }
 }

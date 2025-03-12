@@ -44,6 +44,9 @@ export class ClientUseCase {
 
     public async getClient(clientId: string): Promise<Client | null> {
         const client = await this.clientRepository.findById(clientId)
+        if (!client) {
+            throw new Error('Client not found')
+        }
         return client
     }
 }

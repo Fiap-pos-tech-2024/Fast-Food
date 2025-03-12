@@ -1,13 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Router, Request, Response } from 'express'
 import { OrderUseCase } from '../../useCases/order'
-import { ORDER_STATUS_LIST } from '../../constants/order'
+import { ERROR_STATUS_BY_MESSAGE } from '../../constants/order'
 
-interface errorType {
-    message: string
-}
-
-export class OrderController {
+export class OrderApiController {
     private routes: Router
     constructor(private OrderUseCase: OrderUseCase) {
         this.routes = Router()
@@ -187,29 +183,20 @@ export class OrderController {
     public async createOrder(req: Request, res: Response) {
         try {
             const order = req.body
-            if (!order) {
-                res.status(404).json({ error: 'Order not created' })
-            }
-
             const orderId = await this.OrderUseCase.createOrder(order)
             res.status(201).json({
                 id: orderId,
                 message: 'Order created successfully',
             })
         } catch (error) {
-            const errorData = error as errorType
-            const status_error: { [key: string]: number } = {
-                'Order already exists': 409,
-                'Product does not exist': 400,
-                'Client does not exist': 400,
-                'Order must have at least one item': 500,
+            const errorData = error as {
+                message: string
             }
-
-            const status_code = status_error[errorData.message] || 500
-            const error_message = status_error[errorData.message]
+            const statusCode = ERROR_STATUS_BY_MESSAGE[errorData.message] || 500
+            const errorMessage = ERROR_STATUS_BY_MESSAGE[errorData.message]
                 ? errorData.message
                 : 'An unexpected error occurred'
-            res.status(status_code).json({ error: error_message })
+            res.status(statusCode).json({ error: errorMessage })
         }
     }
 
@@ -412,13 +399,17 @@ export class OrderController {
         try {
             const orderId = req.params.id
             const orders = await this.OrderUseCase.getOrder(orderId)
-            if (orders) {
-                res.status(200).json(orders)
-                return
-            }
-            res.status(404).send('Order not found')
+            res.status(200).json(orders)
         } catch (error) {
-            res.status(500).json({ error: 'An unexpected error occurred' })
+            const errorData = error as {
+                message: string
+            }
+
+            const statusCode = ERROR_STATUS_BY_MESSAGE[errorData.message] || 500
+            const errorMessage = ERROR_STATUS_BY_MESSAGE[errorData.message]
+                ? errorData.message
+                : 'An unexpected error occurred'
+            res.status(statusCode).json({ error: errorMessage })
         }
     }
     /**
@@ -463,16 +454,18 @@ export class OrderController {
         const orderId = req.params.id
         const { status } = req.body
 
-        if (!ORDER_STATUS_LIST.includes(status)) {
-            res.status(400).json({ error: 'Invalid status provided' })
-            return
-        }
-
         try {
             await this.OrderUseCase.updateOrderStatus(orderId, status)
             res.status(200).send(`Order status ${orderId} updated successfully`)
         } catch (error) {
-            res.status(500).json({ error })
+            const errorData = error as {
+                message: string
+            }
+            const statusCode = ERROR_STATUS_BY_MESSAGE[errorData.message] || 500
+            const errorMessage = ERROR_STATUS_BY_MESSAGE[errorData.message]
+                ? errorData.message
+                : 'An unexpected error occurred'
+            res.status(statusCode).json({ error: errorMessage })
         }
     }
 

@@ -1,23 +1,23 @@
 import { PaymentRepository } from '../domain/interface/paymentRepository'
 import { OrderRepository } from '../domain/interface/orderRepository'
 import { Payment } from '../domain/entities/payment'
-import { MercadoPagoController } from '../drivers/web/mercadoPagoController'
 import { PAYMENT_STATUS } from '../constants/payment'
 import { ORDER_STATUS } from '../constants/order'
+import { PaymentGateway } from '../domain/interface/paymentGateway'
 
 export class PaymentUseCase {
     private paymentRepository: PaymentRepository
     private orderRepository: OrderRepository
-    private mercadoPagoController: MercadoPagoController
+    private paymentGateway: PaymentGateway
 
     constructor(
         paymentRepository: PaymentRepository,
         orderRepository: OrderRepository,
-        mercadoPagoController: MercadoPagoController
+        paymentGateway: PaymentGateway
     ) {
         this.orderRepository = orderRepository
         this.paymentRepository = paymentRepository
-        this.mercadoPagoController = mercadoPagoController
+        this.paymentGateway = paymentGateway
     }
 
     async createPayment(payment: Payment): Promise<{ id: string }> {
@@ -30,21 +30,10 @@ export class PaymentUseCase {
         if (!existingOrder) {
             throw new Error('Order does not exist')
         }
-        const accessData = await this.mercadoPagoController.getUserToken()
 
-        if (!accessData?.token || !accessData?.userId) {
-            throw new Error('Failed to fetch QR code token')
-        }
-
-        const qrCodeLink = (await this.mercadoPagoController.generateQRCodeLink(
-            accessData,
+        const QRCodePaymentLink = await this.paymentGateway.createPaymentLink(
             payment.order
-        )) as { qr_data: string }
-
-        const QRCodePaymentLink =
-            await this.mercadoPagoController.convertQRCodeToImage(
-                qrCodeLink.qr_data
-            )
+        )
 
         const paymentCreated = await this.paymentRepository.createPayment({
             ...payment,
@@ -77,31 +66,23 @@ export class PaymentUseCase {
     }): Promise<void> {
         if (webhookData.topic !== 'merchant_order') return
 
-        const mercadoPagoData =
-            (await this.mercadoPagoController.getPaymentStatus(
-                webhookData.resource
-            )) as { id: string; status: string }
+        const paymentStatusData = await this.paymentGateway.getPaymentStatus(
+            webhookData.resource
+        )
+        if (!paymentStatusData) throw new Error('Payment not found')
 
-        if (!mercadoPagoData) {
-            throw new Error('Failed to get MercadoPago data')
-        }
-
-        const paymentId = mercadoPagoData.id
-        const paymentStatus = mercadoPagoData.status.toUpperCase()
-
-        const payment = await this.paymentRepository.getPayment(paymentId)
-        if (!payment) {
-            throw new Error('Payment not found')
-        }
+        const paymentUrl = webhookData.resource
+        const payment = await this.paymentRepository.getPayment(paymentUrl)
+        if (!payment) throw new Error('Payment not found')
 
         await this.paymentRepository.updatePaymentStatus(
-            paymentId,
-            paymentStatus
+            paymentStatusData.id,
+            paymentStatusData.status
         )
 
-        if (paymentStatus === 'PAID') {
+        if (paymentStatusData.status === 'PAID') {
             await this.orderRepository.updateOrderStatus(
-                paymentId,
+                paymentStatusData.id,
                 ORDER_STATUS.RECEIVED
             )
         }

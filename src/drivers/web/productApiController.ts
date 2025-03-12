@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Router, Request, Response } from 'express'
 import { ProductUseCase } from '../../useCases/product'
+import { ERROR_STATUS_BY_MESSAGE } from '../../constants/product'
 
 interface ErrorType {
     message: string
 }
 
-export class ProductController {
+export class ProductApiController {
     private routes: Router
     private productUseCase: ProductUseCase
 
@@ -123,15 +124,11 @@ export class ProductController {
             res.status(201).send('Product created successfully')
         } catch (error: unknown) {
             const errorData = error as ErrorType
-            const status_error: { [key: string]: number } = {
-                'Product already exists': 409,
-            }
-
-            const status_code = status_error[errorData.message] || 500
-            const error_message = status_error[errorData.message]
+            const statusCode = ERROR_STATUS_BY_MESSAGE[errorData.message] || 500
+            const errorMessage = ERROR_STATUS_BY_MESSAGE[errorData.message]
                 ? errorData.message
                 : 'Internal Server Error'
-            res.status(status_code).json({ error: error_message })
+            res.status(statusCode).json({ error: errorMessage })
         }
     }
 
@@ -266,13 +263,14 @@ export class ProductController {
         try {
             const productId = req.params.id
             const product = await this.productUseCase.getProduct(productId)
-            if (product) {
-                res.status(200).json(product)
-            } else {
-                res.status(404).send('Product not found')
-            }
-        } catch (error) {
-            res.status(500).send('Error fetching product')
+            res.status(200).json(product)
+        } catch (error: unknown) {
+            const errorData = error as ErrorType
+            const statusCode = ERROR_STATUS_BY_MESSAGE[errorData.message] || 500
+            const errorMessage = ERROR_STATUS_BY_MESSAGE[errorData.message]
+                ? errorData.message
+                : 'Error fetching product'
+            res.status(statusCode).json({ error: errorMessage })
         }
     }
 }

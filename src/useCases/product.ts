@@ -12,7 +12,6 @@ export class ProductUseCase {
     }
 
     public async listProductsByCategory(category: string): Promise<Product[]> {
-        // Novo método para listar por categoria
         return await this.productRepository.findByCategory(category)
     }
 
@@ -40,7 +39,7 @@ export class ProductUseCase {
                 updatedProductData.observation ?? existingProduct.observation,
             updatedAt: new Date(),
             createdAt: existingProduct.createdAt,
-            category: updatedProductData.category ?? existingProduct.category, // Nova propriedade categoria
+            category: updatedProductData.category ?? existingProduct.category,
             calculateTotalValue: existingProduct.calculateTotalValue,
             deletedAt: existingProduct.deletedAt,
         })
@@ -60,6 +59,8 @@ export class ProductUseCase {
     }
 
     public async getProduct(productId: string): Promise<Product | null> {
-        return await this.productRepository.findById(productId)
+        const product = await this.productRepository.findById(productId)
+        if (!product) throw new Error('Product not found')
+        return product
     }
 }

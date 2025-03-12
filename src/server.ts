@@ -1,21 +1,21 @@
 import express from 'express'
-import { OrderController } from './drivers/web/orderController'
-import { HealthCheckController } from './drivers/web/healthCheckController'
-import { ClientApiController } from './drivers/web/clientApiController'
-import { ProductController } from './drivers/web/productController'
 import { MongoConnection } from './config/mongoConfig'
-import { ClientUseCase } from './useCases/client'
-import { ProductUseCase } from './useCases/product'
+import swaggerRouter from './config/swaggerConfig'
+import { ClientApiController } from './drivers/web/clientApiController'
+import { HealthCheckApiController } from './drivers/web/healthCheckApiController'
+import { OrderController } from './drivers/web/orderController'
+import { ProductController } from './drivers/web/productController'
+import { PaymentController } from './drivers/web/paymentController'
+import { MercadoPagoController } from './drivers/web/mercadoPagoController'
 import { MongoClientRepository } from './drivers/database/clientModel'
 import { MongoOrderRepository } from './drivers/database/orderModel'
 import { MongoProductRepository } from './drivers/database/productModel'
-import { OrderUseCase } from './useCases/order'
-import swaggerRouter from './config/swaggerConfig'
-import { HealthCheckUseCase } from './useCases/healthCheck'
 import { MongoPaymentRepository } from './drivers/database/paymentModel'
+import { ClientUseCase } from './useCases/client'
+import { ProductUseCase } from './useCases/product'
+import { OrderUseCase } from './useCases/order'
+import { HealthCheckUseCase } from './useCases/healthCheck'
 import { PaymentUseCase } from './useCases/payment'
-import { PaymentController } from './drivers/web/paymentController'
-import { MercadoPagoController } from './drivers/web/mercadoPagoController'
 
 class InitProject {
     public express: express.Application
@@ -70,23 +70,20 @@ class InitProject {
         const paymentRepository = new MongoPaymentRepository(
             this.mongoConnection
         )
-
-        // Agora passando o `mercadoPagoController` para o `PaymentUseCase`
         const paymentUseCase = new PaymentUseCase(
             paymentRepository,
             orderRepository,
             mercadoPagoController
         )
-
         const paymentController = new PaymentController(paymentUseCase)
         this.express.use('/payment', paymentController.setupRoutes())
 
         // Configuração do Health Check e Swagger
         const healthCheckUseCase = new HealthCheckUseCase()
-        const routesHealthCheckController = new HealthCheckController(
+        const healthCheckHandler = new HealthCheckApiController(
             healthCheckUseCase
         )
-        this.express.use('/health', routesHealthCheckController.setupRoutes())
+        this.express.use('/health', healthCheckHandler.setupRoutes())
         this.express.use('/api-docs', swaggerRouter)
     }
 

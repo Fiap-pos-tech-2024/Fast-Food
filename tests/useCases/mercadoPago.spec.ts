@@ -1,16 +1,16 @@
 import QRCode, { QRCodeSegment, QRCodeToDataURLOptions } from 'qrcode'
-import { MercadoPagoController } from '../../../src/drivers/web/mercadoPagoController'
-import { Order } from '../../domain/entities/order'
-import { Product } from '../../domain/entities/product'
+import { MercadoPagoUseCase } from '../../src/useCases/mercadoPago'
+import { Order } from '../domain/entities/order'
+import { Product } from '../domain/entities/product'
 
-describe('MercadoPagoController', () => {
-    let mercadoPagoController: MercadoPagoController
+describe('mercadoPagoUseCase', () => {
+    let mercadoPagoUseCase: MercadoPagoUseCase
     let mockOrder: Order
     let mockProduct: Product
     let mockTokenData: { token: string; userId: number }
 
     beforeEach(() => {
-        mercadoPagoController = new MercadoPagoController()
+        mercadoPagoUseCase = new MercadoPagoUseCase()
 
         mockProduct = {
             idProduct: '1',
@@ -58,7 +58,7 @@ describe('MercadoPagoController', () => {
                 }),
             })
 
-            const result = await mercadoPagoController.getUserToken()
+            const result = await mercadoPagoUseCase.getUserToken()
 
             expect(result).toEqual({
                 token: 'Bearer mock_access_token',
@@ -78,7 +78,7 @@ describe('MercadoPagoController', () => {
                 .fn()
                 .mockRejectedValue(new Error('Token fetch error'))
 
-            await expect(mercadoPagoController.getUserToken()).rejects.toThrow(
+            await expect(mercadoPagoUseCase.getUserToken()).rejects.toThrow(
                 'Failed to fetch Mercado Pago Token'
             )
         })
@@ -92,7 +92,7 @@ describe('MercadoPagoController', () => {
                 }),
             })
 
-            const result = await mercadoPagoController.generateQRCodeLink(
+            const result = await mercadoPagoUseCase.generateQRCodeLink(
                 mockTokenData,
                 mockOrder
             )
@@ -118,10 +118,7 @@ describe('MercadoPagoController', () => {
                 .mockRejectedValue(new Error('QR Code generation error'))
 
             await expect(
-                mercadoPagoController.generateQRCodeLink(
-                    mockTokenData,
-                    mockOrder
-                )
+                mercadoPagoUseCase.generateQRCodeLink(mockTokenData, mockOrder)
             ).rejects.toThrow('Failed to generate QR code link')
         })
     })

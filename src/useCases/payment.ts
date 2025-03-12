@@ -1,23 +1,23 @@
 import { PaymentRepository } from '../domain/interface/paymentRepository'
 import { OrderRepository } from '../domain/interface/orderRepository'
 import { Payment } from '../domain/entities/payment'
-import { MercadoPagoController } from '../drivers/web/mercadoPagoController'
 import { PAYMENT_STATUS } from '../constants/payment'
 import { ORDER_STATUS } from '../constants/order'
+import { MercadoPagoUseCase } from './mercadoPago'
 
 export class PaymentUseCase {
     private paymentRepository: PaymentRepository
     private orderRepository: OrderRepository
-    private mercadoPagoController: MercadoPagoController
+    private mercadoPagoUseCase: MercadoPagoUseCase
 
     constructor(
         paymentRepository: PaymentRepository,
         orderRepository: OrderRepository,
-        mercadoPagoController: MercadoPagoController
+        mercadoPagoUseCase: MercadoPagoUseCase
     ) {
         this.orderRepository = orderRepository
         this.paymentRepository = paymentRepository
-        this.mercadoPagoController = mercadoPagoController
+        this.mercadoPagoUseCase = mercadoPagoUseCase
     }
 
     async createPayment(payment: Payment): Promise<{ id: string }> {
@@ -30,19 +30,18 @@ export class PaymentUseCase {
         if (!existingOrder) {
             throw new Error('Order does not exist')
         }
-        const accessData = await this.mercadoPagoController.getUserToken()
 
+        const accessData = await this.mercadoPagoUseCase.getUserToken()
         if (!accessData?.token || !accessData?.userId) {
             throw new Error('Failed to fetch QR code token')
         }
 
-        const qrCodeLink = (await this.mercadoPagoController.generateQRCodeLink(
+        const qrCodeLink = await this.mercadoPagoUseCase.generateQRCodeLink(
             accessData,
             payment.order
-        )) as { qr_data: string }
-
+        )
         const QRCodePaymentLink =
-            await this.mercadoPagoController.convertQRCodeToImage(
+            await this.mercadoPagoUseCase.convertQRCodeToImage(
                 qrCodeLink.qr_data
             )
 
@@ -77,11 +76,9 @@ export class PaymentUseCase {
     }): Promise<void> {
         if (webhookData.topic !== 'merchant_order') return
 
-        const mercadoPagoData =
-            (await this.mercadoPagoController.getPaymentStatus(
-                webhookData.resource
-            )) as { id: string; status: string }
-
+        const mercadoPagoData = await this.mercadoPagoUseCase.getPaymentStatus(
+            webhookData.resource
+        )
         if (!mercadoPagoData) {
             throw new Error('Failed to get MercadoPago data')
         }

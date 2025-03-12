@@ -6,7 +6,6 @@ import { HealthCheckApiController } from './drivers/web/healthCheckApiController
 import { OrderApiController } from './drivers/web/orderApiController'
 import { ProductApiController } from './drivers/web/productApiController'
 import { PaymentApiController } from './drivers/web/paymentApiController'
-import { MercadoPagoController } from './drivers/web/mercadoPagoController'
 import { MongoClientRepository } from './drivers/database/clientModel'
 import { MongoOrderRepository } from './drivers/database/orderModel'
 import { MongoProductRepository } from './drivers/database/productModel'
@@ -16,6 +15,7 @@ import { ProductUseCase } from './useCases/product'
 import { OrderUseCase } from './useCases/order'
 import { HealthCheckUseCase } from './useCases/healthCheck'
 import { PaymentUseCase } from './useCases/payment'
+import { MercadoPagoUseCase } from './useCases/mercadoPago'
 
 class InitProject {
     public express: express.Application
@@ -63,17 +63,15 @@ class InitProject {
         const orderHandler = new OrderApiController(orderUseCase)
         this.express.use('/order', orderHandler.setupRoutes())
 
-        // Configuração do MercadoPagoController
-        const mercadoPagoController = new MercadoPagoController()
-
         // Configuração do Pagamento
         const paymentRepository = new MongoPaymentRepository(
             this.mongoConnection
         )
+        const mercadoPagoUseCase = new MercadoPagoUseCase()
         const paymentUseCase = new PaymentUseCase(
             paymentRepository,
             orderRepository,
-            mercadoPagoController
+            mercadoPagoUseCase
         )
         const paymentHandler = new PaymentApiController(paymentUseCase)
         this.express.use('/payment', paymentHandler.setupRoutes())

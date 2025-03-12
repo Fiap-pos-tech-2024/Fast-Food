@@ -1,8 +1,8 @@
 import QRCode from 'qrcode'
-import { Order } from '../../domain/entities/order'
-import { Product } from '../../domain/entities/product'
+import { Order } from '../domain/entities/order'
+import { Product } from '../domain/entities/product'
 
-export class MercadoPagoController {
+export class MercadoPagoUseCase {
     async getUserToken(): Promise<{ token: string; userId: number } | null> {
         const url = `${process.env.MERCADO_PAGO_API}/oauth/token`
         const data = {

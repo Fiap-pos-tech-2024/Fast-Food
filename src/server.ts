@@ -4,7 +4,7 @@ import swaggerRouter from './config/swaggerConfig'
 import { ClientApiController } from './drivers/web/clientApiController'
 import { HealthCheckApiController } from './drivers/web/healthCheckApiController'
 import { OrderApiController } from './drivers/web/orderApiController'
-import { ProductController } from './drivers/web/productController'
+import { ProductApiController } from './drivers/web/productApiController'
 import { PaymentApiController } from './drivers/web/paymentApiController'
 import { MercadoPagoController } from './drivers/web/mercadoPagoController'
 import { MongoClientRepository } from './drivers/database/clientModel'
@@ -50,8 +50,8 @@ class InitProject {
             this.mongoConnection
         )
         const productUseCase = new ProductUseCase(productRepository)
-        const routesProductController = new ProductController(productUseCase)
-        this.express.use('/product', routesProductController.setupRoutes())
+        const productHandler = new ProductApiController(productUseCase)
+        this.express.use('/product', productHandler.setupRoutes())
 
         // Configuração do Order
         const orderRepository = new MongoOrderRepository(this.mongoConnection)

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Router, Request, Response } from 'express'
 import { ClientUseCase } from '../../useCases/client'
+import { ERROR_STATUS_BY_MESSAGE } from '../../constants/client'
 
 export class ClientApiController {
     private routes: Router
@@ -140,12 +141,8 @@ export class ClientApiController {
             const errorData = error as {
                 message: string
             }
-            const statusError: { [key: string]: number } = {
-                'Client already exists': 409,
-            }
-
-            const statusCode = statusError[errorData.message] || 500
-            const errorMessage = statusError[errorData.message]
+            const statusCode = ERROR_STATUS_BY_MESSAGE[errorData.message] || 500
+            const errorMessage = ERROR_STATUS_BY_MESSAGE[errorData.message]
                 ? errorData.message
                 : 'Internal Server Error'
             res.status(statusCode).json({ error: errorMessage })
@@ -338,12 +335,9 @@ export class ClientApiController {
             const errorData = error as {
                 message: string
             }
-            const statusError: { [key: string]: number } = {
-                'Client not found': 404,
-            }
-
-            const status_code = statusError[errorData.message] || 500
-            const errorMessage = statusError[errorData.message]
+            const status_code =
+                ERROR_STATUS_BY_MESSAGE[errorData.message] || 500
+            const errorMessage = ERROR_STATUS_BY_MESSAGE[errorData.message]
                 ? errorData.message
                 : 'Error fetching client'
             res.status(status_code).json({ error: errorMessage })

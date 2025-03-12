@@ -10,12 +10,12 @@ import { MongoClientRepository } from './drivers/database/clientModel'
 import { MongoOrderRepository } from './drivers/database/orderModel'
 import { MongoProductRepository } from './drivers/database/productModel'
 import { MongoPaymentRepository } from './drivers/database/paymentModel'
+import { MercadoPagoGateway } from './drivers/paymentGateway/mercadoPago'
 import { ClientUseCase } from './useCases/client'
 import { ProductUseCase } from './useCases/product'
 import { OrderUseCase } from './useCases/order'
 import { HealthCheckUseCase } from './useCases/healthCheck'
 import { PaymentUseCase } from './useCases/payment'
-import { MercadoPagoUseCase } from './useCases/mercadoPago'
 
 class InitProject {
     public express: express.Application
@@ -67,11 +67,11 @@ class InitProject {
         const paymentRepository = new MongoPaymentRepository(
             this.mongoConnection
         )
-        const mercadoPagoUseCase = new MercadoPagoUseCase()
+        const paymentGateway = new MercadoPagoGateway()
         const paymentUseCase = new PaymentUseCase(
             paymentRepository,
             orderRepository,
-            mercadoPagoUseCase
+            paymentGateway
         )
         const paymentHandler = new PaymentApiController(paymentUseCase)
         this.express.use('/payment', paymentHandler.setupRoutes())

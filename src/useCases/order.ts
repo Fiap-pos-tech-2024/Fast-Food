@@ -78,16 +78,12 @@ export class OrderUseCase {
     }
 
     async updateOrder(id: string, order: Order) {
-        const existingOrder = await this.getOrder(id)
-        if (!existingOrder) throw new Error('Order does not exist')
-
+        await this.getOrder(id)
         return this.orderRepository.updateOrder(id, order)
     }
 
     async deleteOrder(id: string) {
-        const existingOrder = await this.getOrder(id)
-        if (!existingOrder) throw new Error('Order does not exist')
-
+        await this.getOrder(id)
         return this.orderRepository.deleteOrder(id)
     }
 

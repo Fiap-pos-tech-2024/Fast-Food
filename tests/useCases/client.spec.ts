@@ -137,14 +137,13 @@ describe('clientUseCase', () => {
             expect(clientRepository.findById).toHaveBeenCalledWith(clientId)
         })
 
-        it('should return null if client does not exist', async () => {
+        it('should throw an error if client does not exist', async () => {
             const clientId = '1'
             clientRepository.findById.mockResolvedValue(null)
 
-            const result = await useCase.getClient(clientId)
-
-            expect(result).toBeNull()
-            expect(clientRepository.findById).toHaveBeenCalledWith(clientId)
+            await expect(useCase.getClient(clientId)).rejects.toThrow(
+                'Client not found'
+            )
         })
     })
 })

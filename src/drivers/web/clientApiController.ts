@@ -2,10 +2,7 @@
 import { Router, Request, Response } from 'express'
 import { ClientUseCase } from '../../useCases/client'
 
-interface errorType {
-    message: string
-}
-export class ClientController {
+export class ClientApiController {
     private routes: Router
     private clientUseCase: ClientUseCase
 
@@ -140,16 +137,18 @@ export class ClientController {
                 message: 'Client created successfully',
             })
         } catch (error: unknown) {
-            const errorData = error as errorType
-            const status_error: { [key: string]: number } = {
+            const errorData = error as {
+                message: string
+            }
+            const statusError: { [key: string]: number } = {
                 'Client already exists': 409,
             }
 
-            const status_code = status_error[errorData.message] || 500
-            const error_message = status_error[errorData.message]
+            const statusCode = statusError[errorData.message] || 500
+            const errorMessage = statusError[errorData.message]
                 ? errorData.message
                 : 'Internal Server Error'
-            res.status(status_code).json({ error: error_message })
+            res.status(statusCode).json({ error: errorMessage })
         }
     }
 
@@ -333,13 +332,21 @@ export class ClientController {
         try {
             const clientId = req.params.id
             const client = await this.clientUseCase.getClient(clientId)
-            if (client) {
-                res.status(200).json(client)
-            } else {
-                res.status(404).send('Client not found')
-            }
+
+            res.status(200).json(client)
         } catch (error) {
-            res.status(500).send('Error fetching client')
+            const errorData = error as {
+                message: string
+            }
+            const statusError: { [key: string]: number } = {
+                'Client not found': 404,
+            }
+
+            const status_code = statusError[errorData.message] || 500
+            const errorMessage = statusError[errorData.message]
+                ? errorData.message
+                : 'Error fetching client'
+            res.status(status_code).json({ error: errorMessage })
         }
     }
 }

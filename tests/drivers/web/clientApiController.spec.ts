@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
-import { ClientController } from '../../../src/drivers/web/clientController'
+import { ClientApiController } from '../../../src/drivers/web/clientApiController'
 import { ClientUseCase } from '../../../src/useCases/client'
 import { Client } from '../../domain/entities/client'
 
-describe('ClientController', () => {
-    let clientController: ClientController
+describe('ClientApiController', () => {
+    let clientController: ClientApiController
     let mockClientUseCase: jest.Mocked<ClientUseCase>
     let req: Partial<Request>
     let res: Partial<Response>
@@ -19,7 +19,7 @@ describe('ClientController', () => {
             clientRepository: {},
         } as unknown as jest.Mocked<ClientUseCase>
 
-        clientController = new ClientController(mockClientUseCase)
+        clientController = new ClientApiController(mockClientUseCase)
 
         req = {
             params: {},
@@ -172,27 +172,30 @@ describe('ClientController', () => {
             expect(res.status).toHaveBeenCalledWith(200)
             expect(res.json).toHaveBeenCalledWith(client)
         })
-
         it('should return 404 if client not found', async () => {
             req.params = { id: '1' }
-            mockClientUseCase.getClient.mockResolvedValue(null)
+            const error = new Error('Client not found')
+            mockClientUseCase.getClient.mockRejectedValue(error)
 
             await clientController.getClient(req as Request, res as Response)
 
             expect(res.status).toHaveBeenCalledWith(404)
-            expect(res.send).toHaveBeenCalledWith('Client not found')
+            expect(res.json).toHaveBeenCalledWith({
+                error: 'Client not found',
+            })
         })
 
         it('should return 500 on error', async () => {
             req.params = { id: '1' }
-            mockClientUseCase.getClient.mockRejectedValue(
-                new Error('Error fetching client')
-            )
+            const error = new Error('Error fetching client')
+            mockClientUseCase.getClient.mockRejectedValue(error)
 
             await clientController.getClient(req as Request, res as Response)
 
             expect(res.status).toHaveBeenCalledWith(500)
-            expect(res.send).toHaveBeenCalledWith('Error fetching client')
+            expect(res.json).toHaveBeenCalledWith({
+                error: 'Error fetching client',
+            })
         })
     })
 })

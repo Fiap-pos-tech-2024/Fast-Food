@@ -1,7 +1,7 @@
 import express from 'express'
 import { OrderController } from './drivers/web/orderController'
 import { HealthCheckController } from './drivers/web/healthCheckController'
-import { ClientController } from './drivers/web/clientController'
+import { ClientApiController } from './drivers/web/clientApiController'
 import { ProductController } from './drivers/web/productController'
 import { MongoConnection } from './config/mongoConfig'
 import { ClientUseCase } from './useCases/client'
@@ -42,8 +42,8 @@ class InitProject {
         // Configuração do Client
         const clientRepository = new MongoClientRepository(this.mongoConnection)
         const clientUseCase = new ClientUseCase(clientRepository)
-        const routesClientController = new ClientController(clientUseCase)
-        this.express.use('/client', routesClientController.setupRoutes())
+        const clientHandler = new ClientApiController(clientUseCase)
+        this.express.use('/client', clientHandler.setupRoutes())
 
         // Configuração do Product
         const productRepository = new MongoProductRepository(

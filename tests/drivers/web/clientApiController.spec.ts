@@ -75,8 +75,9 @@ describe('ClientApiController', () => {
 
         it('should return 409 if client already exists', async () => {
             req.body = Client.createMock()
-            const error = new Error('Client already exists')
-            mockClientUseCase.createClient.mockRejectedValue(error)
+            mockClientUseCase.createClient.mockRejectedValue(
+                new Error('Client already exists')
+            )
 
             await clientController.createClient(req as Request, res as Response)
 
@@ -174,8 +175,9 @@ describe('ClientApiController', () => {
         })
         it('should return 404 if client not found', async () => {
             req.params = { id: '1' }
-            const error = new Error('Client not found')
-            mockClientUseCase.getClient.mockRejectedValue(error)
+            mockClientUseCase.getClient.mockRejectedValue(
+                new Error('Client not found')
+            )
 
             await clientController.getClient(req as Request, res as Response)
 
@@ -187,8 +189,9 @@ describe('ClientApiController', () => {
 
         it('should return 500 on error', async () => {
             req.params = { id: '1' }
-            const error = new Error('Error fetching client')
-            mockClientUseCase.getClient.mockRejectedValue(error)
+            mockClientUseCase.getClient.mockRejectedValue(
+                new Error('Error fetching client')
+            )
 
             await clientController.getClient(req as Request, res as Response)
 

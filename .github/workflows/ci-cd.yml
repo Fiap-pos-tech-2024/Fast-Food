@@ -9,6 +9,7 @@ jobs:
     build-test:
         name: Build, Test and Validate
         runs-on: ubuntu-latest
+        
 
         services:
             mongo:
@@ -38,10 +39,3 @@ jobs:
 
             - name: Run tests
               run: npm test
-
-
-      
-
-        
-
-

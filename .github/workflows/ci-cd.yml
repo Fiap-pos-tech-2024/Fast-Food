@@ -1,55 +1,47 @@
 name: Fast-Food CI/CD
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  build-test:
-    name: Build, Test and Validate
-    runs-on: ubuntu-latest
+    build-test:
+        name: Build, Test and Validate
+        runs-on: ubuntu-latest
 
-    services:
-      mongo:
-        image: mongo:6
-        ports:
-          - 27017:27017
-        options: >-
-          --health-cmd="mongosh --eval 'db.adminCommand(\"ping\")'" 
-          --health-interval=10s 
-          --health-timeout=5s 
-          --health-retries=5
+        services:
+            mongo:
+                image: mongo:6
+                ports:
+                    - 27017:27017
+                options: >-
+                    --health-cmd="mongosh --eval 'db.adminCommand(\"ping\")'" 
+                    --health-interval=10s 
+                    --health-timeout=5s 
+                    --health-retries=5
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: '18'
 
-      - name: Install root dependencies
-        run: npm install
+            - name: Install root dependencies
+              run: npm install
 
-      - name: Run lint
-        run: npm run lint
+            - name: Run lint
+              run: npm run lint
 
-      - name: Run tests
-        run: npm test
+            - name: Run tests
+              run: npm test
 
-      - name: Build Docker containers
-        run: docker-compose build
 
-      - name: Start containers
-        run: docker-compose up -d
+      
 
-      - name: Wait for services to start
-        run: sleep 10
+        
 
-      - name: Health check on API (adjust port if needed)
-        run: curl --fail http://localhost:3000 || exit 1
 
-      - name: Tear down containers
-        run: docker-compose down

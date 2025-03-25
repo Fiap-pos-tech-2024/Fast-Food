@@ -1,0 +1,60 @@
+name: Fast-Food CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    name: Build, Test and Validate
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.adminCommand(\"ping\")'" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+
+    steps:
+      - name:  Checkout repository
+        uses: actions/checkout@v3
+
+      - name:  Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name:  Install dependencies for all services
+        run: |
+          cd auth-service && npm install && cd ..
+          cd order-service && npm install && cd ..
+          cd product-service && npm install && cd ..
+          cd api-gateway && npm install && cd ..
+
+      - name:  Run tests for all services
+        run: |
+          cd auth-service && npm test && cd ..
+          cd order-service && npm test && cd ..
+          cd product-service && npm test && cd ..
+          cd api-gateway && npm test && cd ..
+
+      - name:  Build all Docker containers
+        run: docker-compose build
+
+      - name:  Start all containers
+        run: docker-compose up -d
+
+      - name:  Wait for services to be ready
+        run: sleep 10
+
+      - name:  Health check on API Gateway
+        run: curl --fail http://localhost:3000 || exit 1
+
+      - name:  Shut down containers
+        run: docker-compose down

@@ -31,7 +31,7 @@ Com o crescimento da lanchonete, a falta de um sistema de controle de pedidos po
 
 ## Como Rodar o Projeto Localmente
 
-Para iniciar o projeto, você precisará ter o Docker, Docker Compose e Minikube instalados. Siga os passos abaixo:
+Para iniciar o projeto, você precisará ter o Docker e o Docker Compose instalados. Siga os passos abaixo:
 
 1. Clone o repositório:
 
@@ -40,31 +40,15 @@ Para iniciar o projeto, você precisará ter o Docker, Docker Compose e Minikube
    cd Fast-Food
 ```
 
-2. Inicie o Minikube:
+2. Construa e inicie os containers:
 
 ```bash
-   minikube start
+    docker-compose up --build
 ```
 
-3. Aplique os manifestos Kubernetes:
+3. Acesse a aplicação em http://localhost:3000
 
-```bash
-   kubectl apply -f k8s/configmap.yaml
-   kubectl apply -f k8s/secret.yaml
-   kubectl apply -f k8s/deployment.yaml
-   kubectl apply -f k8s/service.yaml
-   kubectl apply -f k8s/hpa.yaml
-```
-
-4. Exponha a aplicação localmente:
-
-```bash
-   kubectl port-forward service/fast-food-service 3000:3000
-```
-
-5. Acesse a aplicação em [http://localhost:3000](http://localhost:3000).
-
-6. Configure o ngrok para ser o webhook:
+4. Configure o ngrok para ser o webhook:
 
 ```bash
 npm install -g ngrok
@@ -74,36 +58,6 @@ ngrok http 3000
 Esse comando indica a nossa porta da aplicação para redirecionar. Copie o link gerado e cole na env `MERCADO_PAGO_WEBHOOK`.
 
 Obs: Caso seja a primeira vez, faça login conforme sugerido no terminal.
-
-## Como Rodar o Projeto com Docker
-
-Se preferir rodar o projeto sem Kubernetes, você pode usar apenas o Docker. Siga os passos abaixo:
-
-1. Certifique-se de que o Docker e o Docker Compose estão instalados em sua máquina.
-
-2. Clone o repositório:
-
-```bash
-   git clone git@github.com:Fiap-pos-tech-2024/Fast-Food.git
-   cd Fast-Food
-```
-
-3. Construa e inicie os contêineres:
-
-```bash
-   docker-compose up --build
-```
-
-4. Acesse a aplicação em [http://localhost:3000](http://localhost:3000).
-
-5. Configure o ngrok para ser o webhook:
-
-```bash
-npm install -g ngrok
-ngrok http 3000
-```
-
-Esse comando indica a nossa porta da aplicação para redirecionar. Copie o link gerado e cole na env `MERCADO_PAGO_WEBHOOK`.
 
 ## Documentação da API
 

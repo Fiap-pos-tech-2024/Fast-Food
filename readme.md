@@ -92,6 +92,12 @@ kubectl delete -f k8s/configmap.yaml
 kubectl delete -f k8s/secret.yaml
 ```
 
+Para expor a porta 3000 do kubernets, utilizar o seguinte comando
+
+```bash
+kubectl port-forward service/fast-food-service 3000:3000
+```
+
 ## Arquitetura
 
 ![Desenho da arquitetura Fase 2 - FIAP](./assets/FIAP_Fase2.png)

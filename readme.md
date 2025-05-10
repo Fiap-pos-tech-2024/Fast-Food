@@ -273,4 +273,3 @@ curl --location 'http://localhost:3000/payment/:idPayment' \
 ```
 
 Deverá retornar com o status **paid**
-

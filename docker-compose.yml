@@ -5,6 +5,7 @@ services:
             dockerfile: Dockerfile
         ports:
             - '3000:3000'
+
         environment:
             MONGODB_URI: ${MONGODB_URI}
             MERCADO_PAGO_API: ${MERCADO_PAGO_API}
@@ -16,6 +17,8 @@ services:
             - mongo
         volumes:
             - ./src:/app/src
+        networks:
+            - shared-net
 
     mongo:
         image: mongo:latest
@@ -24,6 +27,12 @@ services:
             - '/var/log/mongodb/mongod.log'
         volumes:
             - mongo_data:/data/db # Persistir os dados do MongoDB
+        networks:
+            - shared-net
 
 volumes:
     mongo_data:
+
+networks:
+    shared-net:
+        external: true

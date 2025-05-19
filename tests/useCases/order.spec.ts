@@ -225,7 +225,7 @@ describe('orderUseCase', () => {
 
             await expect(
                 useCase.updateOrder(orderId, updadatedOrderData)
-            ).rejects.toThrow('Order does not exist')
+            ).rejects.toThrow('Order not found')
             expect(OrderRepository.updateOrder).not.toHaveBeenCalled()
         })
     })
@@ -258,7 +258,7 @@ describe('orderUseCase', () => {
             OrderRepository.getOrder.mockResolvedValue(null)
 
             await expect(useCase.deleteOrder(orderId)).rejects.toThrow(
-                'Order does not exist'
+                'Order not found'
             )
             expect(OrderRepository.deleteOrder).not.toHaveBeenCalled()
         })
@@ -286,14 +286,14 @@ describe('orderUseCase', () => {
             expect(OrderRepository.getOrder).toHaveBeenCalledWith(orderId)
         })
 
-        it('should return null if order does not exist', async () => {
+        it('should return error if order does not exist', async () => {
             const orderId = '1'
-            OrderRepository.getOrder.mockResolvedValue(null)
+            const error = new Error('Order not found')
+            OrderRepository.getOrder.mockRejectedValue(error)
 
-            const result = await useCase.getOrder(orderId)
-
-            expect(result).toBeNull()
-            expect(OrderRepository.getOrder).toHaveBeenCalledWith(orderId)
+            await expect(useCase.getOrder(orderId)).rejects.toThrow(
+                'Order not found'
+            )
         })
     })
 

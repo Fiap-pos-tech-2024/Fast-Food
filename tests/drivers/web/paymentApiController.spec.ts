@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
-import { PaymentController } from '../../../src/drivers/web/paymentController'
+import { PaymentApiController } from '../../../src/drivers/web/paymentApiController'
 import { PaymentUseCase } from '../../../src/useCases/payment'
 import { Payment } from '../../domain/entities/payment'
 
-describe('PaymentController', () => {
-    let paymentController: PaymentController
+describe('PaymentApiController', () => {
+    let paymentController: PaymentApiController
     let mockPaymentUseCase: jest.Mocked<PaymentUseCase>
     let req: Partial<Request>
     let res: Partial<Response>
@@ -16,7 +16,7 @@ describe('PaymentController', () => {
             paymentRepository: {},
         } as unknown as jest.Mocked<PaymentUseCase>
 
-        paymentController = new PaymentController(mockPaymentUseCase)
+        paymentController = new PaymentApiController(mockPaymentUseCase)
 
         req = {
             params: {},
@@ -81,12 +81,15 @@ describe('PaymentController', () => {
 
         it('should return 404 if payment not found', async () => {
             req.params = { paymentId: '1' }
-            mockPaymentUseCase.getPayment.mockResolvedValue(null)
+            mockPaymentUseCase.getPayment.mockRejectedValue(
+                new Error('Payment not found')
+            )
 
             await paymentController.getPayment(req as Request, res as Response)
-
             expect(res.status).toHaveBeenCalledWith(404)
-            expect(res.send).toHaveBeenCalledWith('Payment not found')
+            expect(res.json).toHaveBeenCalledWith({
+                error: 'Payment not found',
+            })
         })
 
         it('should return 500 on error', async () => {

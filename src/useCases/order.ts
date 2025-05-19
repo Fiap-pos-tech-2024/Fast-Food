@@ -3,7 +3,7 @@ import { OrderRepository } from '../domain/interface/orderRepository'
 import { ClientRepository } from '../domain/interface/clientRepository'
 import { ProductRepository } from '../domain/interface/productRepository'
 import { Product } from '../domain/entities/product'
-import { ORDER_STATUS } from '../constants/order'
+import { ORDER_STATUS, ORDER_STATUS_LIST } from '../constants/order'
 
 export class OrderUseCase {
     constructor(
@@ -13,31 +13,30 @@ export class OrderUseCase {
     ) {}
 
     async getOrder(id: string): Promise<Order | null> {
-        return this.orderRepository.getOrder(id)
+        const orders = await this.orderRepository.getOrder(id)
+        if (!orders) throw new Error('Order not found')
+        return orders
     }
     async getActiveOrders(): Promise<Order[]> {
         return this.orderRepository.getActiveOrders()
     }
 
     async createOrder(order: Order): Promise<string> {
-        if (order.items?.length === 0) {
+        if (!order) throw new Error('Invalid order data')
+
+        if (order.items?.length === 0)
             throw new Error('Order must have at least one item')
-        }
 
         if (order.idOrder) {
             const existingOrder = await this.getOrder(order.idOrder)
-            if (existingOrder) {
-                throw new Error('Order already exists')
-            }
+            if (existingOrder) throw new Error('Order already exists')
         }
 
         if (order.idClient) {
             const existingClient = await this.clientRepository.findById(
                 order.idClient
             )
-            if (!existingClient) {
-                throw new Error('Client does not exist')
-            }
+            if (!existingClient) throw new Error('Client does not exist')
         }
 
         const itemsDetails: Product[] = []
@@ -79,22 +78,20 @@ export class OrderUseCase {
     }
 
     async updateOrder(id: string, order: Order) {
-        const existingOrder = await this.getOrder(id)
-        if (!existingOrder) {
-            throw new Error('Order does not exist')
-        }
+        await this.getOrder(id)
         return this.orderRepository.updateOrder(id, order)
     }
 
     async deleteOrder(id: string) {
-        const existingOrder = await this.getOrder(id)
-        if (!existingOrder) {
-            throw new Error('Order does not exist')
-        }
+        await this.getOrder(id)
         return this.orderRepository.deleteOrder(id)
     }
 
     async updateOrderStatus(id: string, status: string): Promise<void> {
+        if (!ORDER_STATUS_LIST.includes(status)) {
+            throw new Error('Invalid status provided')
+        }
+
         return this.orderRepository.updateOrderStatus(id, status)
     }
 

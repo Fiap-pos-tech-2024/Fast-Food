@@ -1,11 +1,11 @@
 import { PaymentRepository } from '../../src/domain/interface/paymentRepository'
 import { OrderRepository } from '../../src/domain/interface/orderRepository'
-import { MercadoPagoController } from '../../src/drivers/web/mercadoPagoController'
 import { Payment } from '../../src/domain/entities/payment'
 import { PAYMENT_STATUS } from '../../src/constants/payment'
 import { Order } from '../domain/entities/order'
 import { PaymentUseCase } from '../../src/useCases/payment'
 import { ORDER_STATUS } from '../../src/constants/order'
+import { PaymentGateway } from '../../src/domain/interface/paymentGateway'
 
 const existingOrderMock = {
     idOrder: '123',
@@ -15,10 +15,11 @@ const existingOrderMock = {
     name: 'John Doe',
     email: 'johndoe@example.com',
 } as Order
+
 describe('PaymentUseCase', () => {
     let paymentRepository: jest.Mocked<PaymentRepository>
     let orderRepository: jest.Mocked<OrderRepository>
-    let mercadoPagoController: jest.Mocked<MercadoPagoController>
+    let paymentGateway: jest.Mocked<PaymentGateway>
     let useCase: PaymentUseCase
 
     beforeEach(() => {
@@ -37,17 +38,15 @@ describe('PaymentUseCase', () => {
             listOrders: jest.fn(),
             getActiveOrders: jest.fn(),
         }
-        mercadoPagoController = {
-            getUserToken: jest.fn(),
-            generateQRCodeLink: jest.fn(),
-            convertQRCodeToImage: jest.fn(),
+        paymentGateway = {
+            createPaymentLink: jest.fn(),
             getPaymentStatus: jest.fn(),
         }
 
         useCase = new PaymentUseCase(
             paymentRepository,
             orderRepository,
-            mercadoPagoController
+            paymentGateway
         )
     })
 
@@ -62,32 +61,17 @@ describe('PaymentUseCase', () => {
                 },
             } as Payment
 
-            const accessData = {
-                token: 'token',
-                userId: 'userId',
-            } as unknown as {
-                token: string
-                userId: number
-            }
-            const qrCodeLink = { qr_data: 'qr_code_data' }
             const paymentCreated = { id: '1', paymentLink: 'image_link' }
 
             orderRepository.getOrder.mockResolvedValue(existingOrderMock)
-            mercadoPagoController.getUserToken.mockResolvedValue(accessData)
-            mercadoPagoController.generateQRCodeLink.mockResolvedValue(
-                qrCodeLink
-            )
-            mercadoPagoController.convertQRCodeToImage.mockResolvedValue(
-                'image_link'
-            )
+            paymentGateway.createPaymentLink.mockResolvedValue('image_link')
             paymentRepository.createPayment.mockResolvedValue(paymentCreated)
 
             const result = await useCase.createPayment(payment)
 
             expect(result).toEqual(paymentCreated)
             expect(orderRepository.getOrder).toHaveBeenCalledWith('123')
-            expect(mercadoPagoController.getUserToken).toHaveBeenCalledTimes(1)
-            expect(mercadoPagoController.generateQRCodeLink).toHaveBeenCalled()
+            expect(paymentGateway.createPaymentLink).toHaveBeenCalledTimes(1)
             expect(paymentRepository.createPayment).toHaveBeenCalledWith({
                 ...payment,
                 paymentLink: 'image_link',
@@ -125,7 +109,9 @@ describe('PaymentUseCase', () => {
             } as Payment
 
             orderRepository.getOrder.mockResolvedValue(existingOrderMock)
-            mercadoPagoController.getUserToken.mockResolvedValue(null)
+            paymentGateway.createPaymentLink.mockRejectedValue(
+                new Error('Failed to fetch QR code token')
+            )
 
             await expect(useCase.createPayment(payment)).rejects.toThrow(
                 'Failed to fetch QR code token'
@@ -175,14 +161,12 @@ describe('PaymentUseCase', () => {
                 resource: 'resource',
                 topic: 'merchant_order',
             }
-            const mercadoPagoData = { id: '1', status: PAYMENT_STATUS.PAID }
+            const paymentDataMock = { id: '1', status: PAYMENT_STATUS.PAID }
             const paymentId = '1'
             const payment = { id: paymentId } as unknown as Payment
 
             paymentRepository.getPayment.mockResolvedValue(payment)
-            mercadoPagoController.getPaymentStatus.mockResolvedValue(
-                mercadoPagoData
-            )
+            paymentGateway.getPaymentStatus.mockResolvedValue(paymentDataMock)
             paymentRepository.updatePaymentStatus.mockResolvedValue(undefined)
             orderRepository.updateOrderStatus.mockResolvedValue(undefined)
 
@@ -212,11 +196,13 @@ describe('PaymentUseCase', () => {
                 resource: 'resource',
                 topic: 'merchant_order',
             }
+            const paymentDataMock = { id: '1', status: PAYMENT_STATUS.PAID }
+            paymentGateway.getPaymentStatus.mockResolvedValue(paymentDataMock)
             paymentRepository.getPayment.mockResolvedValue(null)
 
             await expect(
                 useCase.handlePaymentWebhook(webhookData)
-            ).rejects.toThrow('Failed to get MercadoPago data')
+            ).rejects.toThrow('Payment not found')
         })
     })
 })

@@ -9,7 +9,7 @@ export class HealthCheckUseCase {
             currentEnv: 'development',
             node: process.version,
             timestamp: new Date().toUTCString() || 'N/A',
-            name: process.env.npm_package_name || 'Fast Food',
+            name: process.env.npm_package_name ?? 'Fast Food',
         }
     }
 }
